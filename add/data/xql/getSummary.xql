@@ -431,11 +431,22 @@ declare function local:getTextSummary($doc, $facsBasePath){
     </div>
 };
 
+declare function local:getImagePath() {
+	let $server :=  eutil:getPreference('image_server', request:get-parameter('edition', '')) 
+	
+	return if($server = 'leaflet')
+                            then(eutil:getPreference('leaflet_prefix',
+                            request:get-parameter('edition', '')))
+                            else(eutil:getPreference('image_prefix',
+                            request:get-parameter('edition', '')))  	
+};
+
 let $uri := request:get-parameter('uri', '')
 let $type := request:get-parameter('type', '')
 let $docUri := if(contains($uri, '#')) then(substring-before($uri, '#')) else($uri)
 let $doc := eutil:getDoc($docUri)
-let $imagePrefix := eutil:getPreference('image_prefix', request:get-parameter('edition', ''))
+let $imagePrefix := local:getImagePath()
+(:eutil:getPreference('image_prefix', request:get-parameter('edition', '')):)
 
 return
     if($type = 'work')

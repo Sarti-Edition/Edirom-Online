@@ -27,6 +27,8 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 	
 	facsimileHeight: null,
 	
+	markersArray: null,
+	
 	/** 
 	 * Initialite a facsimile layer.
      * @overrides
@@ -70,10 +72,10 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 	       
             // create rectangle
            // console.log(Ext.getCmp('leafletfacsimile').getMap());
-	       this.rectangle = L.rectangle(bounds, {color: 'blue', weight: 1}).addTo(this._map);
+	       this.rectangle = L.rectangle(bounds, {color: 'black', weight: 1, opacity: 0.8}).addTo(this._map);
 	      
 	      // zoom rectangle in windows center
-	      this._map.fitBounds(bounds);
+	      //this._map.fitBounds(bounds);
 	        
 	    }
        },     
@@ -82,7 +84,8 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
       * Remove rectanle and center from map.
      */
        disableRectangle: function(){
-          if(typeof this.rectangle !== 'undefined' && this._map.hasLayer(this.rectangle)){
+          if(typeof this.rectangle !== 'undefined' && typeof  this._map  !== 'undefined'
+          && this._map.hasLayer(this.rectangle)){
             this._map.removeLayer(this.rectangle);
             this.rectangle = null;
           }
@@ -100,6 +103,44 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
             this._map.fitBounds(bounds);
            }         
        },
+       
+       fitInImage: function(){
+       
+       var corrd1 = this.facsimileWidth/2;
+       				var corrd2 = this.facsimileHeight/2;
+          			 var centerPoint = L.point(corrd1, corrd2);	
+          			 var latLngCenterPoint = this._map.unproject(centerPoint, this._map.getMaxZoom());	
+					this._map.setView([latLngCenterPoint.lat, latLngCenterPoint.lng], 0);
+       
+      // this._map.fitBounds(this._map.getBounds());
+      
+       /*var corrd1 = this.facsimileWidth/2;
+       				var corrd2 = this.facsimileHeight/2;
+          			 var centerPoint = L.point(corrd1, corrd2);	
+          			 var latLngCenterPoint =  this._map.unproject(centerPoint, this._map.getMaxZoom());	
+					 this._map.setView([latLngCenterPoint.lat, latLngCenterPoint.lng], 0);
+       		var targetPoint1 =  this._map.project(latLngCenterPoint, this._map.getMaxZoom()).subtract([0, 0]);
+    				var targetLatLng1 =  this._map.unproject(targetPoint1, this._map.getMaxZoom());
+    				
+    				var targetPoint2 =  this._map.project(latLngCenterPoint, this._map.getMaxZoom()).subtract([0, 0]);
+    				var targetLatLng2 =  this._map.unproject(targetPoint2, this._map.getMaxZoom());
+    				
+    				var mapBoundsLng = L.latLngBounds(targetPoint1, targetLatLng2);
+					console.log( this._map.getBounds());
+					 this._map.fitBounds(mapBoundsLng);
+					console.log( this._map.getBounds());*/
+       	/*	var mapBounds = this._map.getPixelBounds();
+					var minPoint = mapBounds.min;
+					var maxPoint = mapBounds.max;
+					var minPointLng = this._map.unproject(minPoint, this._map.getZoom());
+					var maxPointLng = this._map.unproject(maxPoint, this._map.getZoom());
+					var mapBoundsLng = L.latLngBounds(minPointLng, maxPointLng);
+					 
+					var zoomPossible = this._map.getBoundsZoom(mapBoundsLng, true);
+					console.log(zoomPossible);
+					
+					this._map.fitBounds(mapBoundsLng);*/
+       },
           
    /**
     * Compute and show center for given bounds.
@@ -109,7 +150,12 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
     * @param {number} lry - right y coordinste.
     */
      showRectangleCenter: function(ulx, uly, lrx, lry, nr){  
+       var me = this;
        //if(typeof rectangleCenter === 'undefined' || rectangleCenter === null){
+       if(typeof  this.markersArray === 'undefined' || this.markersArray === null){
+       		this.markersArray = [];
+       }
+       
        
        ulx = parseInt(ulx);      
        uly = parseInt(uly);       
@@ -129,15 +175,38 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
                fillOpacity: 0.5
            }).addTo(this._map);*/
            
-           
            var myIcon = L.divIcon({ 
-    iconSize: new L.Point(0, 0), 
-    html: '<font style="color:blue">'+nr+'<font/>'
-});
+           	iconSize: new L.Point(17, 17),
+    		html: '<center>'+nr+'</center>'
+		});
 
-L.marker([latLngCenterPoint.lat, latLngCenterPoint.lng], {icon: myIcon}).addTo(this._map); 
+		var marker = L.marker([latLngCenterPoint.lat, latLngCenterPoint.lng], {icon: myIcon}); 
+        marker.addTo(this._map);
+        marker.on('mouseover', function (e) {
+        	if(typeof me.rectangle !== 'undefined' && me.rectangle !== null){
+        		me.disableRectangle();      		
+        	}
+        	me.enableRectangle(ulx, uly, lrx, lry);
+						/*console.log(e.latlng);
+						console.log(e.layerPoint);
+						console.log(e.containerPoint);
+						console.log(e.originalEvent);*/
+					});
+       
+        this.markersArray.push(marker);
+     },	
         
-        },	
+     /**
+      * Remove markers from the map.
+      */
+       removeMarkers: function(){
+       	if(typeof  this.markersArray !== 'undefined' && this.markersArray !== null){
+       		for(i = 0; i < this.markersArray.length; i++){
+       			this._map.removeLayer(this.markersArray[i]);
+       		}
+       		this.markersArray = null;
+       	}
+       },
       
 	/**
 	* Add tiles that contain to image only.

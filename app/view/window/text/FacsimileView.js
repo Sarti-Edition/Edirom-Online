@@ -6,7 +6,8 @@ Ext.define('EdiromOnline.view.window.text.FacsimileView', {
     },
 
     requires: [
-        'EdiromOnline.view.window.image.ImageViewer'
+        'EdiromOnline.view.window.image.ImageViewer',
+        'EdiromOnline.view.window.image.LeafletFacsimile'
     ],
 
     alias : 'widget.facsimileView',
@@ -24,8 +25,16 @@ Ext.define('EdiromOnline.view.window.text.FacsimileView', {
     initComponent: function () {
 
         this.addEvents();
+        
+        var image_server = getPreference('image_server');
+    	
+    	if(image_server === 'leaflet'){
+    		this.imageViewer = Ext.create('EdiromOnline.view.window.image.LeafletFacsimile');
+    	}
+    	else{
+    		this.imageViewer = Ext.create('EdiromOnline.view.window.image.ImageViewer');
+    	}
 
-        this.imageViewer = Ext.create('EdiromOnline.view.window.image.ImageViewer');
         this.imageViewer.region = 'center';
 
         this.bottomBar = new EdiromOnline.view.window.BottomBar({owner:this, region:'south'});

@@ -26,6 +26,7 @@ Ext.define('EdiromOnline.view.window.source.MeasureBasedView', {
 
     requires: [
         'EdiromOnline.view.window.image.ImageViewer',
+        'EdiromOnline.view.window.image.LeafletFacsimile',
         'Ext.selection.CheckboxModel',
         'Ext.layout.container.Border'
     ],
@@ -199,18 +200,24 @@ Ext.define('EdiromOnline.view.window.source.MeasureBasedView', {
     },
     
     setMeasure: function(combo, store, measureCount) {
-
+console.log('setMeasure');
+console.log(store);
         var me = this;
 
         if(typeof store.getById !== 'function')
             store = combo.store;
 
+console.log(store);
         me.viewers.each(function(v) {
             v.hide();
         });
 
         var id = combo.getValue();
         var measures = store.getById(id);
+        
+        if(measures === null){
+        	return;
+        }
         
         Ext.Array.each(measures.get('measures'), function(m) {
             
@@ -400,8 +407,16 @@ Ext.define('EdiromOnline.view.window.source.HorizontalMeasureViewer', {
         // SourceView
         me.owner.owner.on('measureVisibilityChange', me.onMeasureVisibilityChange, me);
         me.owner.owner.on('annotationsVisibilityChange', me.onAnnotationsVisibilityChange, me);
-        
-        var viewer = Ext.create('EdiromOnline.view.window.image.ImageViewer', {flex: 1});
+               
+        var image_server = getPreference('image_server');
+        var viewer = null;   	
+    	if(image_server === 'leaflet'){
+    		viewer = Ext.create('EdiromOnline.view.window.image.LeafletFacsimile', {flex: 1});
+    	}
+    	else{
+    		viewer = Ext.create('EdiromOnline.view.window.image.ImageViewer', {flex: 1});
+    	}
+       
         viewer.on('imageChanged', me.onViewerImageChange, me);
         
         me.imageViewers = [viewer];
@@ -497,7 +512,15 @@ Ext.define('EdiromOnline.view.window.source.HorizontalMeasureViewer', {
             
             if(typeof me.imageViewers[viewerCount - 1] == 'undefined') {
             
-                var viewer = Ext.create('EdiromOnline.view.window.image.ImageViewer', {flex: 1});
+             var image_server = getPreference('image_server');
+        	var viewer = null;   	
+    		if(image_server === 'leaflet'){
+    			viewer = Ext.create('EdiromOnline.view.window.image.LeafletFacsimile', {flex: 1});
+    		}
+    		else{
+    			viewer = Ext.create('EdiromOnline.view.window.image.ImageViewer', {flex: 1});
+    		}
+            
                 viewer.on('imageChanged', me.onViewerImageChange, me);
             
                 me.imageViewers[viewerCount - 1] = viewer;

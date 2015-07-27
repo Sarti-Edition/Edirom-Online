@@ -42,8 +42,16 @@ Ext.define('EdiromOnline.view.window.text.TextFacsimileSplitView', {
         
         me.addEvents('annotationsVisibilityChange', 'afterImagesLoaded', 'afterImageChanged',
             'documentLoaded');
+            
+        var image_server = getPreference('image_server');
+    	
+    	if(image_server === 'leaflet'){
+    		me.imageViewer = Ext.create('EdiromOnline.view.window.image.LeafletFacsimile');
+    	}
+    	else{
+    		me.imageViewer = Ext.create('EdiromOnline.view.window.image.ImageViewer');
+    	}
 
-        me.imageViewer = Ext.create('EdiromOnline.view.window.image.ImageViewer');
         me.imageViewer.region = 'center';
 
         me.centerPanel = me.imageViewer;

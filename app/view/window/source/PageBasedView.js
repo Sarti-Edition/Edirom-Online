@@ -25,7 +25,8 @@ Ext.define('EdiromOnline.view.window.source.PageBasedView', {
     },
 
     requires: [
-        'EdiromOnline.view.window.image.ImageViewer'
+        'EdiromOnline.view.window.image.ImageViewer',
+        'EdiromOnline.view.window.image.LeafletFacsimile'
     ],
 
     alias : 'widget.pageBasedView',
@@ -38,18 +39,26 @@ Ext.define('EdiromOnline.view.window.source.PageBasedView', {
     imageToShow: null,
     
     cls: 'pageBasedView',
-
+    
     initComponent: function () {
-
-        this.imageViewer = Ext.create('EdiromOnline.view.window.image.ImageViewer');
-
+    
+    	var image_server = getPreference('image_server');
+    	
+    	if(image_server === 'leaflet'){
+    		this.imageViewer = Ext.create('EdiromOnline.view.window.image.LeafletFacsimile');
+    	}
+    	else{
+    		this.imageViewer = Ext.create('EdiromOnline.view.window.image.ImageViewer');
+    	}
+    
         this.items = [
             this.imageViewer
         ];
 
         this.callParent();
-
-        this.imageViewer.on('zoomChanged', this.updateZoom, this);
+        
+ 		this.imageViewer.on('zoomChanged', this.updateZoom, this);
+        
     },
 
     annotationFilterChanged: function(visibleCategories, visiblePriorities) {
@@ -104,6 +113,12 @@ Ext.define('EdiromOnline.view.window.source.PageBasedView', {
         var id = combo.getValue();
         var imgIndex = me.imageSet.findExact('id', id);
         me.activePage = me.imageSet.getAt(imgIndex);
+        
+        console.log('activePage');
+        console.log(me.activePage);
+        
+         console.log('imageSet');
+        console.log(me.imageSet);
 
         me.imageViewer.showImage(me.activePage.get('path'),
             me.activePage.get('width'), me.activePage.get('height'));
@@ -135,7 +150,10 @@ Ext.define('EdiromOnline.view.window.source.PageBasedView', {
 
         var me = this;
 
-        me.zoomSlider = Ext.create('Ext.slider.Single', {
+       var image_server = getPreference('image_server');
+    	
+    	if(image_server === 'digilib'){
+    		me.zoomSlider = Ext.create('Ext.slider.Single', {
             width: 140,
             value: 100,
             increment: 5,
@@ -151,6 +169,7 @@ Ext.define('EdiromOnline.view.window.source.PageBasedView', {
                 change: Ext.bind(me.zoomChanged, me, [], 0)
             }
         });
+    	}
 
         me.pageSpinner = Ext.create('EdiromOnline.view.window.source.PageSpinner', {
             width: 111,
@@ -160,21 +179,35 @@ Ext.define('EdiromOnline.view.window.source.PageBasedView', {
         
         me.separator = Ext.create('Ext.toolbar.Separator');
         
+        if(image_server === 'digilib'){
         return [me.zoomSlider, me.separator, me.pageSpinner];
+        }
+        else{
+        	 return [me.pageSpinner];
+        }
     },
     
     hideToolbarEntries: function() {
         var me = this;
-        me.zoomSlider.hide();
+        if(typeof me.zoomSlider !== 'undefined'){
+        	me.zoomSlider.hide();
+        }       
         me.pageSpinner.hide();
-        me.separator.hide();
+        if(typeof me.separator !== 'undefined'){
+        	me.separator.hide();
+        }        
     },
     
     showToolbarEntries: function() {
         var me = this;
-        me.zoomSlider.show();
+        if(typeof me.zoomSlider !== 'undefined'){
+        	me.zoomSlider.show();
+        }         
         me.pageSpinner.show();
-        me.separator.show();
+        if(typeof me.separator !== 'undefined'){
+        	 me.separator.show();
+        }  
+       
     },
     
     fitFacsimile: function() {
@@ -212,9 +245,11 @@ Ext.define('EdiromOnline.view.window.source.PageBasedView', {
     },
 
     updateZoom: function(zoom) {
-        this.zoomSlider.suspendEvents();
-        this.zoomSlider.setValue(Math.round(zoom * 100));
-        this.zoomSlider.resumeEvents();
+    	if(typeof this.zoomSlider !== 'undefined'){
+        	this.zoomSlider.suspendEvents();
+        	this.zoomSlider.setValue(Math.round(zoom * 100));
+        	this.zoomSlider.resumeEvents();
+        }          
     },
 
     zoomChanged: function(slider) {

@@ -3,17 +3,19 @@
  * @class
  * @classdesc pmdCE.view.facsimileView.LeafletFacsimile for create leaflet component.
  */
-Ext.define('pmdCE.view.facsimileView.LeafletFacsimile', {
+Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 	extend: 'Ext.Component',
 	
 	alias: 'widget.leafletmapview',
-	id: 'leafletfacsimile',
+	//id: 'leafletfacsimile',
 	config: {
 		map: null
 	},
 	
 	zones: null,
 	facsimileTile: null,
+	facsimileHeight: null,
+	facsimileWidth: null, 
 	
 	/**
 	 * Get data for initialize a map, data for show measures and ftaffs numbers, 
@@ -28,37 +30,48 @@ Ext.define('pmdCE.view.facsimileView.LeafletFacsimile', {
 		if (leafletRef == null) {
 			this.update('No leaflet library loaded');
 		} else {
+		
+		var pageId = 'edirom_surface_4b5b3e05-bbc5-4db0-988b-2b0da51fa292';
+		var uri = 'xmldb:exist:///db/contents/sources/edirom_source_01b5977f-4075-4373-a709-5e762b81e8ca.xml';
+		
+		/*if(typeof EdiromOnline.controller.window.source.PageBasedView.activeView !== 'undefined' 
+		&& typeof EdiromOnline.controller.window.source.PageBasedView.getActivePage() !== 'undefined'){		
+			pageId = EdiromOnline.controller.window.source.PageBasedView.getActivePage().get('id');
 			
-			var selectedPage = Ext.getCmp('pages').getText();
-			
-			Ext.Ajax.request({
-				 url: 'resources/xql/getZones.xql',
-				//url: 'data/getZones.xql',
+			uri = EdiromOnline.view.window.source.SourceView.activeView.uri;		
+		}	*/		
+		console.log(pageId);
+		console.log(uri);
+			/*Ext.Ajax.request({
+				 url: 'data/xql/getFacsimileSize.xql',
 				async: false,
 				method: 'GET',
 				params: {
-					path: selectedPage
+					uri: uri,
+                	pageId: pageId
 				},
 				success: function (result) {
+				
+				 var data = result.responseText;
+
+                var size = Ext.create('Ext.data.Store', {
+                    fields: ['height', 'width'],
+                    data: Ext.JSON.decode(data)
+                });
+				
+					facsimileHeight = parseInt(size.data.items[0].data.height); 
+					//977;
+					facsimileWidth = parseInt(size.data.items[0].data.width); 
+					//1280;*/
 					
-					var json = jQuery.parseJSON(result.responseText);
+					/*var originalMaxSize = null;
+					 console.log("imageSet");
+					console.log(EdiromOnline.view.window.source.PageBasedView.imageSet);
 					
-					this.zones = json.zones;
-					var page = json.page;
-					
-					facsimileHeight = 
-					//2992;
-					page.height;
-					facsimileWidth = 
-					//3991;
-					page.width;
-					
-					var originalMaxSize = null;
-					
-					if (facsimileHeight > facsimileWidth) {
-						originalMaxSize = facsimileHeight;
+					if (me.facsimileHeight > me.facsimileWidth) {
+						originalMaxSize = me.facsimileHeight;
 					} else {
-						originalMaxSize = facsimileWidth;
+						originalMaxSize = me.facsimileWidth;
 					}
 					
 					var maxZoomLevel = 0;
@@ -70,85 +83,50 @@ Ext.define('pmdCE.view.facsimileView.LeafletFacsimile', {
 					
 					var map = L.map(me.getId());
 					
-					map.setView([0, 0], Math.round(maxZoomLevel / 2));
+					map.setView([0,0], 0);*/
 					
-					me.setMap(map);
 					
-					var sourceName = Ext.getCmp('source').getText();
 					
-					var pageName = Ext.getCmp('pages').getText();
+					/*var corrd1 = me.facsimileWidth/2;
+       				var corrd2 = me.facsimileHeight/2;
+          			 var centerPoint = L.point(corrd1, corrd2);	
+          			 var latLngCenterPoint = map.unproject(centerPoint, maxZoomLevel);	
+					map.setView([latLngCenterPoint.lat, latLngCenterPoint.lng], 0);*/
 					
-					 var path = 'http://localhost:8080'+json.path;
-					 
-					 console.log('facsimile path');
-					 console.log(json.path);
+					
+					
+					/*me.setMap(map);
+					
+					var path = 'http://localhost:8080/exist/rest/db/contents/example';
 					
 					me.facsimileTile = 
-					/*L.tileLayer.facsimileLayer('data/example/{z}-{x}-{y}.jpg', {
+					L.tileLayer.facsimileLayer(path+'/{z}-{x}-{y}.jpg', {
 						minZoom: 0,
 						maxZoom: maxZoomLevel,
 						continuousWorld: true
+					});
+					
+					
+					me.facsimileTile.setWidth(me.facsimileWidth);
+					
+					me.facsimileTile.setHeight(me.facsimileHeight);
+					
+					me.facsimileTile.addTo(map);*/
+				
+					
+				/*	map.on('click', function (e) {
+						console.log(e.latlng);
+						console.log(e.layerPoint);
+						console.log(e.containerPoint);
+						console.log(e.originalEvent);
 					});*/
 					
 					
-					 L.tileLayer.facsimileLayer(path, {
-					minZoom: 0,
-					maxZoom: maxZoomLevel,
-					continuousWorld : true
-					});
 					
-					me.facsimileTile.setWidth(facsimileWidth);
-					
-					me.facsimileTile.setHeight(facsimileHeight);
-					
-					me.facsimileTile.addTo(map);
-					
-					/* var selectedPage = Ext.getCmp('pages').getText();
-					var pageStaffMap = Ext.getCmp('cetoolbar').staffNr;
-					var test = pageStaffMap[selectedPage];
-					var staffNr = test[test.length-1];
-					var pageMeasuresMap = Ext.getCmp('cetoolbar').pageMeasuresMap;
-					var test = pageMeasuresMap[selectedPage];
-					var value = test[0];*/
-					
-					for (i = 0; i < zones.length; i++) {
-						/* if(zones[i].type === 'measure'){
-						var lrx = zones[i].lrx;
-						var lry = zones[i].uly;
-						var ulx = zones[i].ulx;
-						var uly = 0;
-						me.facsimileTile.showRectangleCenter(ulx, uly, lrx, lry, zones[i].n);
-						}*/
-						if (zones[i].type === 'staff') {
-							//console.log(zones[i]);
-							var lrx = zones[i].lrx;
-							var lry = zones[i].lry;
-							var ulx = zones[i].ulx;
-							var uly = zones[i].uly;
-							var id = zones[i].id;
-							var splittedId = id.split('_');
-							var splittedId = splittedId[3];
-							var mrNr = splittedId.substring(7);
-							var name = 's' + zones[i].n + 'm' + mrNr;
-							me.facsimileTile.showRectangleCenter(ulx, uly, lrx, lry, name);
-						}
-						/*if(zones[i].type === 'staff' && zones[i].n <= staffNr && zones[i].id.indexOf(value) > -1){
-						var lrx = zones[i].ulx;
-						var lry = zones[i].lry;
-						var ulx = 0;
-						var uly = zones[i].uly;
-						me.facsimileTile.showRectangleCenter(ulx, uly, lrx, lry, zones[i].n);
-						}*/
-					}
-					
-					map.on('click', function (e) {
-						/*console.log(e.latlng);
-						console.log(e.layerPoint);
-						console.log(e.containerPoint);
-						console.log(e.originalEvent);*/
-					});
-				}
-			});
+				/*}
+			});*/
+			
+		
 		}
 	},
 	
@@ -165,10 +143,126 @@ Ext.define('pmdCE.view.facsimileView.LeafletFacsimile', {
 		}
 	},
 	
+	 addMeasures: function(shapes) {
+	 
+	 console.log('addMeasures Leaflet');
+     console.log(shapes);
+	 
+	 for (i = 0; i < shapes.data.items.length; i++) {
+				var name = shapes.data.items[i].data.name;
+				var lrx = shapes.data.items[i].data.lrx;
+				var lry = shapes.data.items[i].data.lry;
+				var ulx = shapes.data.items[i].data.ulx;
+				var uly = shapes.data.items[i].data.uly;
+				this.facsimileTile.showRectangleCenter(ulx, uly, lrx, lry, name);		
+		}
+    },
+    
+     removeShapes: function(groupName) {
+        console.log('removeShapes Leaflet');
+        console.log(groupName);
+        if(this.facsimileTile !== null){
+        this.facsimileTile.removeMarkers();
+        this.facsimileTile.disableRectangle();
+        }
+    },
+    
+    clear: function() {
+    	console.log('Clear Leaflet');
+    	if(this.facsimileTile !== null){
+    		this.facsimileTile.removeMarkers();
+        this.facsimileTile.disableRectangle(); 
+        var map = this.getMap();
+        map.remove();
+    	}
+    	
+    },
+    
+    showImage: function(path, width, height, pageId) {
+    console.log("showImage Leaflet");
+					console.log(path);
+					console.log(width);
+					console.log(height);
+					console.log(pageId);
+		
+		var leaflet_prefix = getPreference('leaflet_prefix');
+		var fields = path.split('.');
+		var name = fields[0];
+		var leaflet_path = leaflet_prefix+name;
+		console.log(leaflet_path);
+		
+    	var me = this;
+    	me.facsimileHeight = parseInt(height);
+		me.facsimileWidth = parseInt(width); 
+		
+		var originalMaxSize = null;
+					 
+					if (me.facsimileHeight > me.facsimileWidth) {
+						originalMaxSize = me.facsimileHeight;
+					} else {
+						originalMaxSize = me.facsimileWidth;
+					}
+					
+					var maxZoomLevel = 0;
+					while (originalMaxSize > 256) {
+						originalMaxSize = originalMaxSize / 2;
+						maxZoomLevel++;
+					}
+					console.log("maxZoomLevel :" + maxZoomLevel);
+					
+					var map = L.map(me.getId());
+					
+					var corrd1 = me.facsimileWidth/2;
+       				var corrd2 = me.facsimileHeight/2;
+          			 var centerPoint = L.point(corrd1, corrd2);	
+          			 var latLngCenterPoint = map.unproject(centerPoint, maxZoomLevel);	
+					map.setView([latLngCenterPoint.lat, latLngCenterPoint.lng], 0);
+					
+					
+					//map.setView([0,0], 0);
+					
+					me.setMap(map);
+					
+					me.facsimileTile = 
+					L.tileLayer.facsimileLayer(leaflet_path+'/{z}-{x}-{y}.jpg', {
+						minZoom: 0,
+						maxZoom: maxZoomLevel
+					});
+										
+					me.facsimileTile.setWidth(me.facsimileWidth);
+					
+					me.facsimileTile.setHeight(me.facsimileHeight);
+					
+					me.facsimileTile.addTo(map);
+		
+    },
+    
+    fitInImage: function(){
+    	console.log('fitInImage Leaflet');
+    	this.facsimileTile.fitInImage();
+    },
+    
+    addAnnotations: function(annotations) {
+       console.log('Add Annotations Leaflet');     
+					console.log(annotations);
+    },
+    
+   showRect: function(ulx, uly, width, height, highlight) {
+   	console.log('showRect Leaflet');     
+					console.log(ulx);
+					console.log(uly);
+					console.log(width);
+					console.log(height);
+					console.log(highlight);
+   
+   	this.facsimileTile.enableRectangle(ulx, uly, ulx+width, uly+height);
+   	
+   },
+
 	showMeasure: function(selectedObject){
-		//console.log('Show');
-		//console.log(selectedObject);
-		var measureNr = 'measure'+selectedObject.data.measurenr+'_s'+selectedObject.data.staff;
+		console.log('showMeasure Leaflet');
+		console.log(selectedObject);
+	/*	var measureNr = 'measure'+selectedObject.data.measurenr+'_s'+selectedObject.data.staff;
 		for (i = 0; i < zones.length; i++) {
 			if(zones[i].id.indexOf(measureNr) > -1){
 				var lrx = zones[i].lrx;
@@ -179,25 +273,9 @@ Ext.define('pmdCE.view.facsimileView.LeafletFacsimile', {
 				this.facsimileTile.enableRectangle(ulx, uly, lrx, lry);
 				break;
 			}
-		}
+		}*/
 	
 	}
 	
-	/* listeners: {
-	click : {
-	fn: function() {
 	
-	var app = pmdCE.getApplication();
-	var store = app.getFacsimileStore();
-	console.log(store);
-	console.log(document);
-	
-	facsimileHeight = store.data.items[0].data.page.height;
-	facsimileWidth = store.data.items[0].data.page.width;
-	
-	},
-	element: 'el'
-	
-	}
-	}*/
 });
