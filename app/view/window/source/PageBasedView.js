@@ -45,7 +45,8 @@ Ext.define('EdiromOnline.view.window.source.PageBasedView', {
     	var image_server = getPreference('image_server');
     	
     	if(image_server === 'leaflet'){
-    		this.imageViewer = Ext.create('EdiromOnline.view.window.image.LeafletFacsimile');
+    		this.imageViewer = Ext.create('EdiromOnline.view.window.image.LeafletFacsimile', {flex: 1, width: '100%'});
+    		//Ext.create('EdiromOnline.view.window.image.LeafletFacsimile');
     	}
     	else{
     		this.imageViewer = Ext.create('EdiromOnline.view.window.image.ImageViewer');

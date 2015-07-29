@@ -107,11 +107,46 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
        fitInImage: function(){
        
        var corrd1 = this.facsimileWidth/2;
-       				var corrd2 = this.facsimileHeight/2;
-          			 var centerPoint = L.point(corrd1, corrd2);	
-          			 var latLngCenterPoint = this._map.unproject(centerPoint, this._map.getMaxZoom());	
-					this._map.setView([latLngCenterPoint.lat, latLngCenterPoint.lng], 0);
-       
+       var corrd2 = this.facsimileHeight/2;
+       var centerPoint = L.point(corrd1, corrd2);	
+       var latLngCenterPoint = this._map.unproject(centerPoint, this._map.getMaxZoom());	
+	    this._map.setView([latLngCenterPoint.lat, latLngCenterPoint.lng], 0);
+	   		
+		/*var targetPoint1 =  this._map.project(latLngCenterPoint, this._map.getMaxZoom()).subtract([0, 0]);
+    	var targetLatLng1 =  this._map.unproject(targetPoint1, this._map.getMaxZoom());
+    				
+    				
+    				var coord4 =  L.point(this.facsimileWidth, this.facsimileHeight);
+    				var targetLatLng2 =  this._map.unproject(coord4, this._map.getMaxZoom());
+    				
+    				var targetPoint2 =  this._map.project(targetLatLng2, this._map.getMaxZoom()).subtract([0, 0]);
+    				
+    				
+    				var mapBoundsLng = L.latLngBounds(targetPoint1, targetLatLng2);
+					
+					 this._map.fitBounds(mapBoundsLng, {padding: []});			
+		*/
+					
+		 
+		// var maxZoom = this._map.getMaxZoom();    
+    	//var currZoom = this._map.getZoom();
+    
+    	//var numberCol =this.facsimileWidth/(256*(Math.pow(2,maxZoom-currZoom)));
+    	//var numberRow = this.facsimileHeight/(256*(Math.pow(2,maxZoom-currZoom)));
+		 
+		var coord3 =  L.point(0, 0);	
+		var coord4 =  L.point(this.facsimileWidth, this.facsimileHeight);
+		//var coord4 =  L.point(256*numberCol, 256*numberRow);
+		
+		//var latLngLeft = this._map.unproject(centerPoint, this._map.getMaxZoom());
+		var latLngLeft = this._map.unproject(coord3, this._map.getMaxZoom());
+        var latLngRight = this._map.unproject(coord4, this._map.getMaxZoom());
+            
+		var bounds = L.latLngBounds(latLngLeft, latLngRight);
+		
+		this._map.fitBounds(bounds);
+		
+	  
       // this._map.fitBounds(this._map.getBounds());
       
        /*var corrd1 = this.facsimileWidth/2;

@@ -139,6 +139,7 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 		this.callParent(arguments);
 		var map = this.getMap();
 		if (map) {
+			console.log('onResize');
 			map.invalidateSize();
 		}
 	},
@@ -219,6 +220,8 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 					map.setView([latLngCenterPoint.lat, latLngCenterPoint.lng], 0);
 					
 					
+					
+					
 					//map.setView([0,0], 0);
 					
 					me.setMap(map);
@@ -234,7 +237,8 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 					me.facsimileTile.setHeight(me.facsimileHeight);
 					
 					me.facsimileTile.addTo(map);
-		
+					
+					this.facsimileTile.fitInImage();
     },
     
     fitInImage: function(){
