@@ -14,8 +14,11 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 	
 	zones: null,
 	facsimileTile: null,
-	facsimileHeight: null,
-	facsimileWidth: null, 
+	imgHeight: null,
+	imgWidth: null, 
+	imgId: null,
+	imgPath: null,
+	shapes: null,
 	
 	/**
 	 * Get data for initialize a map, data for show measures and ftaffs numbers, 
@@ -33,6 +36,7 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 		
 		var pageId = 'edirom_surface_4b5b3e05-bbc5-4db0-988b-2b0da51fa292';
 		var uri = 'xmldb:exist:///db/contents/sources/edirom_source_01b5977f-4075-4373-a709-5e762b81e8ca.xml';
+		
 		
 		/*if(typeof EdiromOnline.controller.window.source.PageBasedView.activeView !== 'undefined' 
 		&& typeof EdiromOnline.controller.window.source.PageBasedView.getActivePage() !== 'undefined'){		
@@ -59,7 +63,7 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
                     data: Ext.JSON.decode(data)
                 });
 				
-					facsimileHeight = parseInt(size.data.items[0].data.height); 
+					imgHeight = parseInt(size.data.items[0].data.height); 
 					//977;
 					facsimileWidth = parseInt(size.data.items[0].data.width); 
 					//1280;*/
@@ -68,8 +72,8 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 					 console.log("imageSet");
 					console.log(EdiromOnline.view.window.source.PageBasedView.imageSet);
 					
-					if (me.facsimileHeight > me.facsimileWidth) {
-						originalMaxSize = me.facsimileHeight;
+					if (me.imgHeight > me.facsimileWidth) {
+						originalMaxSize = me.imgHeight;
 					} else {
 						originalMaxSize = me.facsimileWidth;
 					}
@@ -88,7 +92,7 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 					
 					
 					/*var corrd1 = me.facsimileWidth/2;
-       				var corrd2 = me.facsimileHeight/2;
+       				var corrd2 = me.imgHeight/2;
           			 var centerPoint = L.point(corrd1, corrd2);	
           			 var latLngCenterPoint = map.unproject(centerPoint, maxZoomLevel);	
 					map.setView([latLngCenterPoint.lat, latLngCenterPoint.lng], 0);*/
@@ -109,7 +113,7 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 					
 					me.facsimileTile.setWidth(me.facsimileWidth);
 					
-					me.facsimileTile.setHeight(me.facsimileHeight);
+					me.facsimileTile.setHeight(me.imgHeight);
 					
 					me.facsimileTile.addTo(map);*/
 				
@@ -148,8 +152,10 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 	 
 	 console.log('addMeasures Leaflet');
      console.log(shapes);
-	 
-	 for (i = 0; i < shapes.data.items.length; i++) {
+     var me = this;
+     me.setShapes(shapes);
+	// me.shapes = shapes;
+	 for (i = 0; i < this.shapes.data.items.length; i++) {
 				var name = shapes.data.items[i].data.name;
 				var lrx = shapes.data.items[i].data.lrx;
 				var lry = shapes.data.items[i].data.lry;
@@ -157,6 +163,10 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 				var uly = shapes.data.items[i].data.uly;
 				this.facsimileTile.showRectangleCenter(ulx, uly, lrx, lry, name);		
 		}
+    },
+    
+    setShapes: function(shapes){
+    	this.shapes = shapes;
     },
     
      removeShapes: function(groupName) {
@@ -170,13 +180,29 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
     
     clear: function() {
     	console.log('Clear Leaflet');
+    	//console.log(this.shapes);
     	if(this.facsimileTile !== null){
     		this.facsimileTile.removeMarkers();
-        this.facsimileTile.disableRectangle(); 
-        var map = this.getMap();
-        map.remove();
+        	this.facsimileTile.disableRectangle(); 
+        	var map = this.getMap();
+        	map.remove();
+        	this.pageId = null;
     	}
     	
+    },
+    
+    
+     showShapes: function() {
+    console.log("showShapes Leaflet");
+   /* 	
+    
+        var me = this;
+        if(me.shapesHidden) {
+            me.shapesHidden = false;
+            var shapeDiv = me.el.getById(me.id + '_facsContEvents');
+            shapeDiv.removeCls('hiddenShapes');
+            me.repositionShapes();
+        }*/
     },
     
     showImage: function(path, width, height, pageId) {
@@ -185,23 +211,25 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 					console.log(width);
 					console.log(height);
 					console.log(pageId);
-		
+		var me = this;
+		me.imgPath = path;
 		var leaflet_prefix = getPreference('leaflet_prefix');
 		var fields = path.split('.');
 		var name = fields[0];
 		var leaflet_path = leaflet_prefix+name;
 		console.log(leaflet_path);
-		
-    	var me = this;
-    	me.facsimileHeight = parseInt(height);
-		me.facsimileWidth = parseInt(width); 
+		console.log(me.imgPath);
+		   	
+    	me.imgId = pageId;
+    	me.imgHeight = parseInt(height);
+		me.imgWidth = parseInt(width); 
 		
 		var originalMaxSize = null;
 					 
-					if (me.facsimileHeight > me.facsimileWidth) {
-						originalMaxSize = me.facsimileHeight;
+					if (me.imgHeight > me.imgWidth) {
+						originalMaxSize = me.imgHeight;
 					} else {
-						originalMaxSize = me.facsimileWidth;
+						originalMaxSize = me.imgWidth;
 					}
 					
 					var maxZoomLevel = 0;
@@ -213,8 +241,8 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 					
 					var map = L.map(me.getId());
 					
-					var corrd1 = me.facsimileWidth/2;
-       				var corrd2 = me.facsimileHeight/2;
+					var corrd1 = me.imgWidth/2;
+       				var corrd2 = me.imgHeight/2;
           			 var centerPoint = L.point(corrd1, corrd2);	
           			 var latLngCenterPoint = map.unproject(centerPoint, maxZoomLevel);	
 					map.setView([latLngCenterPoint.lat, latLngCenterPoint.lng], 0);
@@ -232,13 +260,25 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 						maxZoom: maxZoomLevel
 					});
 										
-					me.facsimileTile.setWidth(me.facsimileWidth);
+					me.facsimileTile.setWidth(me.imgWidth);
 					
-					me.facsimileTile.setHeight(me.facsimileHeight);
+					me.facsimileTile.setHeight(me.imgHeight);
 					
 					me.facsimileTile.addTo(map);
 					
 					this.facsimileTile.fitInImage();
+					
+					var app = EdiromOnline.getApplication();
+					var tools = app.getController('ToolsController');
+        			var isVisble = tools.areMeasuresVisible();
+        			console.log('showImage Leaflet is visible');
+        			console.log(isVisble);
+        			console.log(me.shapes);
+        			console.log(this.shapes);
+        			if(isVisble === 'true'){
+        				//tools.setGlobalMeasureVisibility(true);
+        				//me.addMeasures(me.shapes);
+        			}
     },
     
     fitInImage: function(){
@@ -266,6 +306,7 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 	showMeasure: function(selectedObject){
 		console.log('showMeasure Leaflet');
 		console.log(selectedObject);
+		this.addMeasures(selectedObject);
 	/*	var measureNr = 'measure'+selectedObject.data.measurenr+'_s'+selectedObject.data.staff;
 		for (i = 0; i < zones.length; i++) {
 			if(zones[i].id.indexOf(measureNr) > -1){
@@ -279,6 +320,18 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 			}
 		}*/
 	
+	},
+	
+	getActualRect: function(){
+	
+	console.log("getActualRect Leaflet");
+		var me = this;
+        return {
+            x: 0,
+            y: 0,
+            width: me.imgWidth,
+            height: me.imgHeight
+        };
 	}
 	
 	

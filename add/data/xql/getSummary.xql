@@ -43,7 +43,7 @@ declare function local:generateRespSentence($names) {
      , ' und ')
 };
 
-declare function local:getSourceSummary($doc, $facsBasePath) {
+declare function local:getSourceSummary($doc, $facsBasePath, $server) {
     let $work := doc($doc//mei:relation[@rel='isEmbodimentOf'][1]/substring-before(@target, '#'))
     let $title := $work//mei:work/mei:titleStmt/mei:title[1]/text()
     let $resp := local:generateRespSentence($work//mei:work/mei:titleStmt/mei:respStmt/*[local-name() != 'resp']/text())
@@ -150,15 +150,37 @@ declare function local:getSourceSummary($doc, $facsBasePath) {
         {
             if($doc//mei:source//mei:titlePage/@facs)
             then(
-                <div class="titlePage">
+            	if($server = 'leaflet') then (           	
+        		<script type="text/javascript"> 
+        			var map = L.map('map').setView([0, 0], 0);  
+           			var facsimileTile = 
+           			L.tileLayer.facsimileLayer('http://localhost:8080/exist/rest/db/contents/leafletImages/edition-Streichquartett/edirom_source_01b5977f-4075-4373-a709-5e762b81e8ca/Autograph_02/{z}-{x}-{y}.jpg');          			
+             		console.log("create");  
+           			facsimileTile.addTo(map);
+        		</script>
+            	)
+                else(<div class="titlePage">
                     <img src="{local:getImagePath($facsBasePath, $doc//mei:source//mei:titlePage[1]/@facs, $imageWidth)}"/>
-                </div>
+                </div>)
             )
             else if($doc//mei:facsimile/mei:surface/mei:graphic)
             then(
+            if($server = 'leaflet') then (           
+        	 <script> 
+        	var map = L.map('map').setView([0, 0], 0);  
+           			var facsimileTile = 
+           			L.tileLayer.facsimileLayer('http://localhost:8080/exist/rest/db/contents/leafletImages/edition-Streichquartett/edirom_source_01b5977f-4075-4373-a709-5e762b81e8ca/Autograph_02/{z}-{x}-{y}.jpg');          			
+             		console.log("create");  
+           			facsimileTile.addTo(map);
+           			map.setZoom(4);
+			</script>
+            	)
+                else(
+            
                 <div class="titlePage">
                     <img src="{local:getImagePath($facsBasePath, $doc//mei:facsimile/mei:surface[1]/mei:graphic[1]/@target, $imageWidth)}"/>
                 </div>
+                )
             )
             else if($doc//mei:source//mei:titlePage)
             then(
@@ -431,28 +453,31 @@ declare function local:getTextSummary($doc, $facsBasePath){
     </div>
 };
 
-declare function local:getImagePath() {
-	let $server :=  eutil:getPreference('image_server', request:get-parameter('edition', '')) 
+declare function local:getImagePath($server) {
+	(:let $server :=  eutil:getPreference('image_server', request:get-parameter('edition', '')) :)
 	
-	return if($server = 'leaflet')
-                            then(eutil:getPreference('leaflet_prefix',
+	 let $i_path := if($server = 'leaflet')
+             then (eutil:getPreference('leaflet_prefix',
                             request:get-parameter('edition', '')))
                             else(eutil:getPreference('image_prefix',
-                            request:get-parameter('edition', '')))  	
+                            request:get-parameter('edition', '')))
+                            
+                            return $i_path
 };
 
 let $uri := request:get-parameter('uri', '')
 let $type := request:get-parameter('type', '')
 let $docUri := if(contains($uri, '#')) then(substring-before($uri, '#')) else($uri)
 let $doc := eutil:getDoc($docUri)
-let $imagePrefix := local:getImagePath()
+let $server :=  eutil:getPreference('image_server', request:get-parameter('edition', '')) 
+let $imagePrefix := local:getImagePath($server)
 (:eutil:getPreference('image_prefix', request:get-parameter('edition', '')):)
 
 return
     if($type = 'work')
     then(local:getWorkSummary($doc, $docUri))
     else if($type = 'source')
-    then(local:getSourceSummary($doc, $imagePrefix))
+    then(local:getSourceSummary($doc, $imagePrefix, $server))
     else if($type = 'text')
     then(local:getTextSummary($doc, $imagePrefix))
     else()
