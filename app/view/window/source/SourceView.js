@@ -115,6 +115,9 @@ Ext.define('EdiromOnline.view.window.source.SourceView', {
         
         var me = this;
         
+        console.log('checkGlobalMeasureVisibility Source View view');
+        console.log(visible);
+        
         if(me.measuresVisibilitySetLocaly) return;
         
         me.measuresVisible = visible;
@@ -275,6 +278,11 @@ Ext.define('EdiromOnline.view.window.source.SourceView', {
         var me = this;
 
         me.pageBasedView.setPage(combo, store);
+        
+        console.log('setPage SourceView in view');
+        console.log(me.measuresVisible);
+        console.log(combo);
+         console.log(store);
 
         if(me.measuresVisible)
             this.fireEvent('measureVisibilityChange', me, true);
@@ -430,6 +438,10 @@ Ext.define('EdiromOnline.view.window.source.SourceView', {
         var me = this;
         me.measuresVisible = state;
         me.measuresVisibilitySetLocaly = true;
+        
+        console.log('toggleMeasures in view');
+        console.log(item);
+         console.log(state);
 
         this.fireEvent('measureVisibilityChange', me, state);
     },

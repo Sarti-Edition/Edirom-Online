@@ -89,6 +89,10 @@ Ext.define('EdiromOnline.view.window.source.PageBasedView', {
     },
 
     setImageSet: function(imageSet) {
+    
+    console.log('setImageSet in view');
+    console.log(imageSet);
+    
         var me = this;
         me.imageSet = imageSet;
 

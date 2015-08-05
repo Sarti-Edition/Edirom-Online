@@ -57,6 +57,10 @@ Ext.define('EdiromOnline.controller.desktop.TaskBar', {
     onMeasureVisibilityChanged: function(button, event) {
         var me = this;
         
+        console.log('onMeasureVisibilityChanged TaskBar controller');
+        console.log(button);
+        console.log(button.pressed);
+        
         var tools = me.application.getController('ToolsController');
         tools.setGlobalMeasureVisibility(button.pressed);
     },

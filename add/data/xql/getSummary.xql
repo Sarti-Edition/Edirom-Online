@@ -165,15 +165,11 @@ declare function local:getSourceSummary($doc, $facsBasePath, $server) {
             )
             else if($doc//mei:facsimile/mei:surface/mei:graphic)
             then(
-            if($server = 'leaflet') then (           
+            if($server = 'leaflet') then ( 
+            
         	 <script> 
-        	var map = L.map('map').setView([0, 0], 0);  
-           			var facsimileTile = 
-           			L.tileLayer.facsimileLayer('http://localhost:8080/exist/rest/db/contents/leafletImages/edition-Streichquartett/edirom_source_01b5977f-4075-4373-a709-5e762b81e8ca/Autograph_02/{z}-{x}-{y}.jpg');          			
-             		console.log("create");  
-           			facsimileTile.addTo(map);
-           			map.setZoom(4);
-			</script>
+        	Ext.create('EdiromOnline.view.window.image.LeafletFacsimile');
+</script>
             	)
                 else(
             
@@ -457,12 +453,10 @@ declare function local:getImagePath($server) {
 	(:let $server :=  eutil:getPreference('image_server', request:get-parameter('edition', '')) :)
 	
 	 let $i_path := if($server = 'leaflet')
-             then (eutil:getPreference('leaflet_prefix',
-                            request:get-parameter('edition', '')))
-                            else(eutil:getPreference('image_prefix',
-                            request:get-parameter('edition', '')))
+             then (eutil:getPreference('leaflet_prefix', request:get-parameter('edition', '')))
+            else(eutil:getPreference('image_prefix', request:get-parameter('edition', '')))
                             
-                            return $i_path
+     return $i_path
 };
 
 let $uri := request:get-parameter('uri', '')

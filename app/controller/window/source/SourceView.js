@@ -47,6 +47,9 @@ Ext.define('EdiromOnline.controller.window.source.SourceView', {
         view.on('gotoMeasureByName', me.onGotoMeasureByName, me);
         view.on('gotoMeasure', me.onGotoMeasure, me);
         view.on('gotoZone', me.onGotoZone, me);
+        
+        console.log('onSourceViewRendered SourceView controller');
+        console.log(view.checkGlobalMeasureVisibility);
 
         ToolsController.addMeasureVisibilityListener(view.id, Ext.bind(view.checkGlobalMeasureVisibility, view));
         view.checkGlobalMeasureVisibility(ToolsController.areMeasuresVisible());
