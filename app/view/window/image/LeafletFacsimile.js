@@ -34,6 +34,9 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 			this.update('No leaflet library loaded');
 		} else {
 		
+		
+
+		
 		var pageId = 'edirom_surface_4b5b3e05-bbc5-4db0-988b-2b0da51fa292';
 		var uri = 'xmldb:exist:///db/contents/sources/edirom_source_01b5977f-4075-4373-a709-5e762b81e8ca.xml';
 		
@@ -205,6 +208,22 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
         }*/
     },
     
+  /*   initComponent: function () {
+
+        var me = this;
+    
+	me.items = [
+	{
+                html: 'test'
+            }
+	
+           // me.imageViewer
+        ];
+
+        me.callParent();
+    },*/
+
+   
     showImage: function(path, width, height, pageId) {
     console.log("showImage Leaflet");
 					console.log(path);
@@ -268,7 +287,7 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 					
 					this.facsimileTile.fitInImage();
 					
-					var app = EdiromOnline.getApplication();
+					/*var app = EdiromOnline.getApplication();
 					var tools = app.getController('ToolsController');
         			var isVisble = tools.areMeasuresVisible();
         			console.log('showImage Leaflet is visible');
@@ -278,7 +297,7 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
         			if(isVisble === 'true'){
         				//tools.setGlobalMeasureVisibility(true);
         				//me.addMeasures(me.shapes);
-        			}
+        			}*/
     },
     
     fitInImage: function(){
@@ -298,7 +317,7 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 					console.log(width);
 					console.log(height);
 					console.log(highlight);
-   
+   this.facsimileTile.disableRectangle();
    	this.facsimileTile.enableRectangle(ulx, uly, ulx+width, uly+height);
    	
    },
@@ -306,7 +325,7 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 	showMeasure: function(selectedObject){
 		console.log('showMeasure Leaflet');
 		console.log(selectedObject);
-		this.addMeasures(selectedObject);
+		//this.addMeasures(selectedObject);
 	/*	var measureNr = 'measure'+selectedObject.data.measurenr+'_s'+selectedObject.data.staff;
 		for (i = 0; i < zones.length; i++) {
 			if(zones[i].id.indexOf(measureNr) > -1){

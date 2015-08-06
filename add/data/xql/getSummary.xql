@@ -150,33 +150,21 @@ declare function local:getSourceSummary($doc, $facsBasePath, $server) {
         {
             if($doc//mei:source//mei:titlePage/@facs)
             then(
-            	if($server = 'leaflet') then (           	
-        		<script type="text/javascript"> 
-        			var map = L.map('map').setView([0, 0], 0);  
-           			var facsimileTile = 
-           			L.tileLayer.facsimileLayer('http://localhost:8080/exist/rest/db/contents/leafletImages/edition-Streichquartett/edirom_source_01b5977f-4075-4373-a709-5e762b81e8ca/Autograph_02/{z}-{x}-{y}.jpg');          			
-             		console.log("create");  
-           			facsimileTile.addTo(map);
-        		</script>
-            	)
-                else(<div class="titlePage">
+            	if($server = 'digilib') then (           	
+        		<div class="titlePage">
                     <img src="{local:getImagePath($facsBasePath, $doc//mei:source//mei:titlePage[1]/@facs, $imageWidth)}"/>
-                </div>)
+                </div>
+            	)
+                else()
             )
             else if($doc//mei:facsimile/mei:surface/mei:graphic)
             then(
-            if($server = 'leaflet') then ( 
-            
-        	 <script> 
-        	Ext.create('EdiromOnline.view.window.image.LeafletFacsimile');
-</script>
-            	)
-                else(
-            
-                <div class="titlePage">
+            if($server = 'digilib') then ( 
+            	<div class="titlePage">
                     <img src="{local:getImagePath($facsBasePath, $doc//mei:facsimile/mei:surface[1]/mei:graphic[1]/@target, $imageWidth)}"/>
                 </div>
-                )
+            	)
+                else()
             )
             else if($doc//mei:source//mei:titlePage)
             then(
@@ -449,29 +437,56 @@ declare function local:getTextSummary($doc, $facsBasePath){
     </div>
 };
 
-declare function local:getImagePath($server) {
+declare function local:getImagePath($server, $edition) {
 	(:let $server :=  eutil:getPreference('image_server', request:get-parameter('edition', '')) :)
 	
 	 let $i_path := if($server = 'leaflet')
-             then (eutil:getPreference('leaflet_prefix', request:get-parameter('edition', '')))
-            else(eutil:getPreference('image_prefix', request:get-parameter('edition', '')))
+             then (eutil:getPreference('leaflet_prefix', $edition))
+            else(eutil:getPreference('image_prefix', $edition))
                             
      return $i_path
+     
 };
+
+declare function local:getImagePathLeaflet($doc) {
+  if($doc//mei:source//mei:titlePage/@facs)
+            then(
+            	let $tile_path := $doc//mei:source//mei:titlePage[1]/@facs
+            	return $tile_path
+            )
+            else if($doc//mei:facsimile/mei:surface/mei:graphic)
+            then(
+            	let $tile_path := $doc//mei:facsimile/mei:surface[1]/mei:graphic[1]/@target
+            	let $width := $doc//mei:facsimile/mei:surface[1]/mei:graphic[1]/@width
+            	let $height := $doc//mei:facsimile/mei:surface[1]/mei:graphic[1]/@height
+            	return concat($tile_path, '§', $width, '§', $height)
+            
+            )
+            else() 
+};
+
 
 let $uri := request:get-parameter('uri', '')
 let $type := request:get-parameter('type', '')
 let $docUri := if(contains($uri, '#')) then(substring-before($uri, '#')) else($uri)
 let $doc := eutil:getDoc($docUri)
-let $server :=  eutil:getPreference('image_server', request:get-parameter('edition', '')) 
-let $imagePrefix := local:getImagePath($server)
+let $edition := request:get-parameter('edition', '')
+let $server :=  eutil:getPreference('image_server', $edition) 
+let $imagePrefix := local:getImagePath($server, $edition)
 (:eutil:getPreference('image_prefix', request:get-parameter('edition', '')):)
+let $imagePath := local:getImagePathLeaflet($doc)
+(:$doc//mei:facsimile/mei:surface[1]/mei:graphic[1]/@target:)
+(:local:getImagePathLeaflet($imagePrefix, $doc//mei:facsimile/mei:surface[1]/mei:graphic[1]/@target):)
 
 return
     if($type = 'work')
     then(local:getWorkSummary($doc, $docUri))
     else if($type = 'source')
-    then(local:getSourceSummary($doc, $imagePrefix, $server))
+    then(
+    	if($server = 'leaflet')
+    	then(concat($imagePath, '§', local:getSourceSummary($doc, $imagePrefix, $server)))
+    	else(local:getSourceSummary($doc, $imagePrefix, $server))
+    )
     else if($type = 'text')
     then(local:getTextSummary($doc, $imagePrefix))
     else()
