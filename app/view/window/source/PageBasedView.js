@@ -64,8 +64,15 @@ Ext.define('EdiromOnline.view.window.source.PageBasedView', {
 
     annotationFilterChanged: function(visibleCategories, visiblePriorities) {
         var me = this;
-
-        var annotations = me.imageViewer.getShapes('annotations');
+     
+     	var image_server = getPreference('image_server');
+     
+        if(image_server === 'leaflet'){
+        	//me.imageViewer.removeShapes('annotations');
+        	return;
+        }
+        
+         var annotations = me.imageViewer.getShapes('annotations');
         var fn = Ext.bind(function(annotation) {
             var annotDiv = this.imageViewer.getShapeElem(annotation.id);
             var className = annotDiv.dom.className.replace('annotation', '').trim();

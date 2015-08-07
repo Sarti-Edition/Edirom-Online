@@ -28,6 +28,7 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 	facsimileHeight: null,
 	
 	markersArray: null,
+	annotArray: null,
 	
 	/** 
 	 * Initialite a facsimile layer.
@@ -47,6 +48,23 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 	    this.facsimileHeight = facsimileHeight;
 	},
 	
+	enableAnnotationRectangle: function(ulx, uly, lrx, lry){  
+		if(typeof  this.annotArray === 'undefined' || this.annotArray === null){
+       		this.annotArray = [];
+       }
+		var rect = this.enableRectangle(ulx, uly, lrx, lry);
+		this.annotArray.push(rect);
+	},
+	
+	removeAnnotations: function(){
+       	if(typeof  this.annotArray !== 'undefined' && this.annotArray !== null){
+       		for(i = 0; i < this.annotArray.length; i++){
+       			this._map.removeLayer(this.annotArray[i]);
+       		}
+       		this.annotArray = null;
+       	}
+     },
+	
     /**
     * Create and show a rectangle with given coordinates in pixel
     * @param {number} ulx - left x coordinate.
@@ -55,7 +73,7 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
     * @param {number} lry - right y coordinste.
     */
      enableRectangle: function(ulx, uly, lrx, lry){  
-       if(typeof this.rectangle === 'undefined' || this.rectangle === null){
+      // if(typeof this.rectangle === 'undefined' || this.rectangle === null){
             // define points in coordinates system
             var pointLeft = L.point(ulx, uly);
             var pointRight = L.point(lrx, lry);
@@ -73,11 +91,11 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
             // create rectangle
            // console.log(Ext.getCmp('leafletfacsimile').getMap());
 	       this.rectangle = L.rectangle(bounds, {color: 'black', weight: 1, opacity: 0.8}).addTo(this._map);
-	      
+	       return this.rectangle;
 	      // zoom rectangle in windows center
 	      //this._map.fitBounds(bounds);
 	        
-	    }
+	 //   }
        },     
        
      /**

@@ -176,8 +176,13 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
         console.log('removeShapes Leaflet');
         console.log(groupName);
         if(this.facsimileTile !== null){
-        this.facsimileTile.removeMarkers();
-        this.facsimileTile.disableRectangle();
+        if(groupName === 'annotations'){
+        	this.facsimileTile.removeAnnotations();
+        }
+        else{
+        	this.facsimileTile.removeMarkers();
+        	this.facsimileTile.disableRectangle();
+        }
         }
     },
     
@@ -231,6 +236,7 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 					console.log(height);
 					console.log(pageId);
 		var me = this;
+		me.shapes = new Ext.util.MixedCollection();
 		me.imgPath = path;
 		var leaflet_prefix = getPreference('leaflet_prefix');
 		var fields = path.split('.');
@@ -308,6 +314,52 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
     addAnnotations: function(annotations) {
        console.log('Add Annotations Leaflet');     
 					console.log(annotations);
+					var me = this;
+					me.shapes.add('annotations', []);
+					
+					for(i = 0; i < annotations.data.items.length; i++){
+						var plist = annotations.data.items[i].data.plist;
+						Ext.Array.insert(me.shapes.get('annotations'), 0, plist);
+						for(j = 0; j < plist.length; j++){
+							var lrx = plist[j].lrx;
+							var lry = plist[j].lry;
+							var ulx = plist[j].ulx;
+							var uly = plist[j].uly;
+							this.facsimileTile.enableAnnotationRectangle(ulx, uly, lrx, lry);
+						}
+					}
+    },
+    
+    getShapeElem: function(shapeId) {
+    
+    console.log("getShapeElem Leaflet");
+    	console.log(shapeId);
+    	
+        var me = this;
+        console.log(me.shapes);
+        
+        var shapes_list = me.shapes.items[0];
+        var shape = null;
+        for(i = 0; i < shapes_list.length; i++){
+        	if(shapes_list[i].id === shapeId){
+        		shape = shapes_list[i];
+        		break;
+        	}
+        }
+        console.log(shapes_list);
+//        var shapeDiv = me.el.getById(me.id + '_facsContEvents');
+//        return shapeDiv.getById(me.id + '_' + shapeId);
+        return shape;
+    },
+    
+    getShapes: function(groupName) {
+    
+    console.log("getShapes leaflet");
+    	console.log(groupName);
+    	
+    
+        var me = this;
+        return me.shapes.get(groupName);
     },
     
    showRect: function(ulx, uly, width, height, highlight) {
