@@ -95,7 +95,13 @@ declare function annotation:getContent($anno as element(), $idPrefix as xs:strin
     let $xsltBase := concat(replace(system:get-module-load-path(), 'embedded-eXist-server', ''), '/../xslt/') (: TODO: Prüfen, wie wir an dem replace vorbei kommen:)
     
     let $html := transform:transform($p,concat($xsltBase,'meiP2html.xsl'),
-    <parameters><param name="idPrefix" value="{$idPrefix}"/><param name="imagePrefix" value="{eutil:getPreference('image_prefix', request:get-parameter('edition', ''))}"/></parameters>)
+    let $edition := request:get-parameter('edition', '');
+	let $imageserver :=  eutil:getPreference('image_server', $edition);
+	let $imageBasePath := if($server = 'leaflet')
+		then(eutil:getPreference('leaflet_prefix', $edition))
+		else(eutil:getPreference('image_prefix', $edition));
+    
+    <parameters><param name="idPrefix" value="{$idPrefix}"/><param name="imagePrefix" value="{$imageBasePath}"/></parameters>)
     return
     
         $html

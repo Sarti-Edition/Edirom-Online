@@ -48,7 +48,13 @@ let $doc := if($term eq '')then($doc)else(util:expand($doc))
 
 let $base := replace(system:get-module-load-path(), 'embedded-eXist-server', '') (:TODO:)
 
-let $imagePrefix := eutil:getPreference('image_prefix', request:get-parameter('edition', ''))
+declare variable $edition := request:get-parameter('edition', '');
+declare variable $imageserver :=  eutil:getPreference('image_server', $edition);
+declare variable $imagePrefix := if($server = 'leaflet')
+	then(eutil:getPreference('leaflet_prefix', $edition))
+	else(eutil:getPreference('image_prefix', $edition));
+
+(:let $imagePrefix := eutil:getPreference('image_prefix', request:get-parameter('edition', '')):)
 
 let $xsl := if($xslInstruction)then($xslInstruction)else('../xslt/teiBody2HTML.xsl')
 

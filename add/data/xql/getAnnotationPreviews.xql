@@ -43,8 +43,15 @@ declare option exist:serialize "method=xhtml media-type=text/html omit-xml-decla
 
 
 declare variable $imageWidth := 600;
-declare variable $imageBasePath := eutil:getPreference('image_prefix', request:get-parameter('edition', ''));
 
+declare variable $edition := request:get-parameter('edition', '');
+declare variable $imageserver :=  eutil:getPreference('image_server', $edition);
+declare variable $imageBasePath := if($server = 'leaflet')
+	then(eutil:getPreference('leaflet_prefix', $edition))
+	else(eutil:getPreference('image_prefix', $edition));
+
+(:declare variable $imageBasePath := eutil:getPreference('image_prefix', request:get-parameter('edition', ''));
+:)
 
 
 declare function local:getParticipants($annot as element()) as xs:string* {
