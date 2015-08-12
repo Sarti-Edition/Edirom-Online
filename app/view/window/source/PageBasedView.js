@@ -250,6 +250,16 @@ Ext.define('EdiromOnline.view.window.source.PageBasedView', {
         var me = this;
         me.imageViewer.addAnnotations(annotations);
     },
+    
+     showOverlay: function(overlayId, overlay) {
+        var me = this;
+        me.imageViewer.showOverlay(overlayId, overlay);
+    },
+    
+     hideOverlay: function(overlayId) {
+        var me = this;
+        me.imageViewer.hideOverlay(overlayId);
+    },
 
     hideAnnotations: function() {
         var me = this;
