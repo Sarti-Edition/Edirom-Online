@@ -465,6 +465,13 @@ declare function local:getImagePathLeaflet($doc) {
             else() 
 };
 
+declare function local:getOutput($doc, $imagePrefix, $server, $imagePath){
+	let $test := <div>
+	<div>{local:getSourceSummary($doc, $imagePrefix, $server)}</div>
+	<p>{$imagePath}</p></div>
+	return $test
+};
+
 
 let $uri := request:get-parameter('uri', '')
 let $type := request:get-parameter('type', '')
@@ -484,7 +491,7 @@ return
     else if($type = 'source')
     then(
     	if($server = 'leaflet')
-    	then(concat($imagePath, '§', local:getSourceSummary($doc, $imagePrefix, $server)))
+    	then(local:getOutput($doc, $imagePrefix, $server, $imagePath))
     	else(local:getSourceSummary($doc, $imagePrefix, $server))
     )
     else if($type = 'text')

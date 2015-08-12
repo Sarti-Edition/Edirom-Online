@@ -62,19 +62,25 @@ Ext.define('EdiromOnline.view.window.SummaryView', {
 	
 	setContent: function (data) {
 		var me = this;
-		
 		if (me.image_server === 'leaflet') {
-		var fields = data.split('§');
-		var imagePath = fields[0];
-		var width = fields[1];
-		var height = fields[2];
-		var text = fields[3];
+			var fragment = document.createDocumentFragment('div');
+			var tempDiv = document.createElement('div');
+			fragment.appendChild(tempDiv);
+			tempDiv.innerHTML = data;
+			var name = tempDiv.getElementsByClassName("summaryViewSource");
+			var name1 = tempDiv.getElementsByTagName("p")[0].firstChild.data;
+			tempDiv.getElementsByTagName("p")[0].firstChild.data = "";
+			
+			var fields = name1.split('§');
+			var imagePath = fields[0];
+			var width = fields[1];
+			var height = fields[2];
 			me.imageViewer.showImage(imagePath,
 			width, height, '');
 			me.add({
 				collapsible: false,
 				region: 'center',
-				html: text
+				html: tempDiv.innerHTML
 			});
 		} else {
 			me.add({
