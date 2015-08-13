@@ -308,11 +308,6 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 		console.log(overlay);
 		
 		var svgURL = "data:image/svg+xml;base64," + btoa(overlay);
-		console.log(svgURL);
-		var mySVGIcon = L.icon({
-			iconUrl: svgURL,
-			html: '<center>' + overlayId + '</center>'
-		});
 		
 		var xmlFile = jQuery.parseXML(overlay);
 		

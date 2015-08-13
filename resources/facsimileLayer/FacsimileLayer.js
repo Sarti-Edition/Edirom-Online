@@ -283,13 +283,20 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 			this.layerArray =[];
 		}
 		
-		var corrd1 = svg_width / 2;
-		var corrd2 = svg_height / 2;
+		var mySVGIcon = L.icon({
+			iconUrl: svgURL,
+			//html: '<center>' + overlayId + '</center>',
+			iconSize: [svg_width, svg_height],
+            iconAnchor: [0, 0]
+		});
+				
+		var corrd1 = 0;
+		var corrd2 = 0;
 		var centerPoint = L.point(corrd1, corrd2);
 		var latLngCenterPoint = this._map.unproject(centerPoint, this._map.getMaxZoom());
 				
 		var marker = L.marker([latLngCenterPoint.lat, latLngCenterPoint.lng], {
-			icon: mySVGIcon
+			icon: mySVGIcon			
 		});
 		
 		marker.addTo(this._map);
