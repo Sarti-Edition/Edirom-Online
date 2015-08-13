@@ -126,11 +126,11 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 	
 	fitInImage: function () {
 		
-		var corrd1 = this.facsimileWidth / 2;
+		/*var corrd1 = this.facsimileWidth / 2;
 		var corrd2 = this.facsimileHeight / 2;
 		var centerPoint = L.point(corrd1, corrd2);
 		var latLngCenterPoint = this._map.unproject(centerPoint, this._map.getMaxZoom());
-		this._map.setView([latLngCenterPoint.lat, latLngCenterPoint.lng], 0);
+		this._map.setView([latLngCenterPoint.lat, latLngCenterPoint.lng], 0);*/
 		
 		/*var targetPoint1 =  this._map.project(latLngCenterPoint, this._map.getMaxZoom()).subtract([0, 0]);
 		var targetLatLng1 =  this._map.unproject(targetPoint1, this._map.getMaxZoom());
@@ -277,32 +277,17 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 		}
 	},
 	
-	showOverlay: function (overlayId, overlay) {
+	showOverlay: function (overlayId, svg_width, svg_height, svgURL) {
 		
 		if (typeof this.layerArray === 'undefined' || this.layerArray === null) {
 			this.layerArray =[];
 		}
 		
-		var svgURL = "data:image/svg+xml;base64," + btoa(overlay);
-		console.log(svgURL);
-		var mySVGIcon = L.icon({
-			iconUrl: svgURL,
-			html: '<center>' + overlayId + '</center>'
-		});
-		
-		var xmlFile = jQuery.parseXML(overlay);
-		
-		var svg_name = xmlFile.getElementsByTagName('svg');
-		var element = svg_name[0];
-		var svg_width = parseInt(element.getAttribute('width'));
-		var svg_height = parseInt(element.getAttribute('height'));
-		
 		var corrd1 = svg_width / 2;
 		var corrd2 = svg_height / 2;
 		var centerPoint = L.point(corrd1, corrd2);
 		var latLngCenterPoint = this._map.unproject(centerPoint, this._map.getMaxZoom());
-		
-		
+				
 		var marker = L.marker([latLngCenterPoint.lat, latLngCenterPoint.lng], {
 			icon: mySVGIcon
 		});

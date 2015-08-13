@@ -1,13 +1,13 @@
 /**
- * Creates class pmdCE.view.facsimileView.LeafletFacsimile that extend from Ext.Component.
+ * Creates class EdiromOnline.view.window.image.LeafletFacsimile that extend from Ext.Component.
  * @class
- * @classdesc pmdCE.view.facsimileView.LeafletFacsimile for create leaflet component.
+ * @classdesc EdiromOnline.view.window.image.LeafletFacsimile for create leaflet component.
  */
 Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 	extend: 'Ext.Component',
 	
 	alias: 'widget.leafletmapview',
-	//id: 'leafletfacsimile',
+	
 	config: {
 		map: null
 	},
@@ -32,107 +32,7 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 		var leafletRef = window.L;
 		if (leafletRef == null) {
 			this.update('No leaflet library loaded');
-		} else {
-			
-			
-			
-			
-			var pageId = 'edirom_surface_4b5b3e05-bbc5-4db0-988b-2b0da51fa292';
-			var uri = 'xmldb:exist:///db/contents/sources/edirom_source_01b5977f-4075-4373-a709-5e762b81e8ca.xml';
-			
-			
-			/*if(typeof EdiromOnline.controller.window.source.PageBasedView.activeView !== 'undefined'
-			&& typeof EdiromOnline.controller.window.source.PageBasedView.getActivePage() !== 'undefined'){
-			pageId = EdiromOnline.controller.window.source.PageBasedView.getActivePage().get('id');
-			
-			uri = EdiromOnline.view.window.source.SourceView.activeView.uri;
-			}	*/
-			console.log(pageId);
-			console.log(uri);
-			/*Ext.Ajax.request({
-			url: 'data/xql/getFacsimileSize.xql',
-			async: false,
-			method: 'GET',
-			params: {
-			uri: uri,
-			pageId: pageId
-			},
-			success: function (result) {
-			
-			var data = result.responseText;
-			
-			var size = Ext.create('Ext.data.Store', {
-			fields: ['height', 'width'],
-			data: Ext.JSON.decode(data)
-			});
-			
-			imgHeight = parseInt(size.data.items[0].data.height);
-			//977;
-			facsimileWidth = parseInt(size.data.items[0].data.width);
-			//1280;*/
-			
-			/*var originalMaxSize = null;
-			console.log("imageSet");
-			console.log(EdiromOnline.view.window.source.PageBasedView.imageSet);
-			
-			if (me.imgHeight > me.facsimileWidth) {
-			originalMaxSize = me.imgHeight;
-			} else {
-			originalMaxSize = me.facsimileWidth;
-			}
-			
-			var maxZoomLevel = 0;
-			while (originalMaxSize > 256) {
-			originalMaxSize = originalMaxSize / 2;
-			maxZoomLevel++;
-			}
-			console.log("maxZoomLevel :" + maxZoomLevel);
-			
-			var map = L.map(me.getId());
-			
-			map.setView([0,0], 0);*/
-			
-			
-			
-			/*var corrd1 = me.facsimileWidth/2;
-			var corrd2 = me.imgHeight/2;
-			var centerPoint = L.point(corrd1, corrd2);
-			var latLngCenterPoint = map.unproject(centerPoint, maxZoomLevel);
-			map.setView([latLngCenterPoint.lat, latLngCenterPoint.lng], 0);*/
-			
-			
-			
-			/*me.setMap(map);
-			
-			var path = 'http://localhost:8080/exist/rest/db/contents/example';
-			
-			me.facsimileTile =
-			L.tileLayer.facsimileLayer(path+'/{z}-{x}-{y}.jpg', {
-			minZoom: 0,
-			maxZoom: maxZoomLevel,
-			continuousWorld: true
-			});
-			
-			
-			me.facsimileTile.setWidth(me.facsimileWidth);
-			
-			me.facsimileTile.setHeight(me.imgHeight);
-			
-			me.facsimileTile.addTo(map);*/
-			
-			
-			/*	map.on('click', function (e) {
-			console.log(e.latlng);
-			console.log(e.layerPoint);
-			console.log(e.containerPoint);
-			console.log(e.originalEvent);
-			});*/
-			
-			
-			
-			/*}
-			});*/
-		}
+		} 
 	},
 	
 	/**
@@ -262,16 +162,14 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 		
 		var map = L.map(me.getId());
 		
-		var corrd1 = me.imgWidth / 2;
+		/*var corrd1 = me.imgWidth / 2;
 		var corrd2 = me.imgHeight / 2;
 		var centerPoint = L.point(corrd1, corrd2);
 		var latLngCenterPoint = map.unproject(centerPoint, maxZoomLevel);
 		map.setView([latLngCenterPoint.lat, latLngCenterPoint.lng], 0);
+		*/
 		
-		
-		
-		
-		//map.setView([0,0], 0);
+		map.setView([0,0], 0);
 		
 		me.setMap(map);
 		
@@ -408,6 +306,22 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 		console.log("showOverlay Leaflet");
 		console.log(overlayId);
 		console.log(overlay);
-		this.facsimileTile.showOverlay(overlayId, overlay);
+		
+		var svgURL = "data:image/svg+xml;base64," + btoa(overlay);
+		console.log(svgURL);
+		var mySVGIcon = L.icon({
+			iconUrl: svgURL,
+			html: '<center>' + overlayId + '</center>'
+		});
+		
+		var xmlFile = jQuery.parseXML(overlay);
+		
+		var svg_name = xmlFile.getElementsByTagName('svg');
+		var element = svg_name[0];
+		var svg_width = parseInt(element.getAttribute('width'));
+		var svg_height = parseInt(element.getAttribute('height'));
+		
+		
+		this.facsimileTile.showOverlay(overlayId, svg_width, svg_height, svgURL);
 	}
 });
