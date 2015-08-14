@@ -49,7 +49,7 @@ let $xslInstruction := for $i in util:serialize($xslInstruction, ())
                         
 declare variable $edition := request:get-parameter('edition', '');
 declare variable $imageserver :=  eutil:getPreference('image_server', $edition);
-declare variable $imagePrefix := if($server = 'leaflet')
+declare variable $imagePrefix := if($imageserver = 'leaflet')
 	then(eutil:getPreference('leaflet_prefix', $edition))
 	else(eutil:getPreference('image_prefix', $edition));
                         

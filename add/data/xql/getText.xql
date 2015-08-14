@@ -50,7 +50,7 @@ let $base := replace(system:get-module-load-path(), 'embedded-eXist-server', '')
 
 declare variable $edition := request:get-parameter('edition', '');
 declare variable $imageserver :=  eutil:getPreference('image_server', $edition);
-declare variable $imagePrefix := if($server = 'leaflet')
+declare variable $imagePrefix := if($imageserver = 'leaflet')
 	then(eutil:getPreference('leaflet_prefix', $edition))
 	else(eutil:getPreference('image_prefix', $edition));
 

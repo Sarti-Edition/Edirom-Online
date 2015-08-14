@@ -46,7 +46,7 @@ declare variable $imageWidth := 600;
 
 declare variable $edition := request:get-parameter('edition', '');
 declare variable $imageserver :=  eutil:getPreference('image_server', $edition);
-declare variable $imageBasePath := if($server = 'leaflet')
+declare variable $imageBasePath := if($imageserver = 'leaflet')
 	then(eutil:getPreference('leaflet_prefix', $edition))
 	else(eutil:getPreference('image_prefix', $edition));
 

@@ -21,7 +21,7 @@ declare variable $base := concat('file:', replace(system:get-module-load-path(),
 
 declare variable $edition := request:get-parameter('edition', '');
 declare variable $imageserver :=  eutil:getPreference('image_server', $edition);
-declare variable $facsBasePath := if($server = 'leaflet')
+declare variable $facsBasePath := if($imageserver = 'leaflet')
 	then(eutil:getPreference('leaflet_prefix', $edition))
 	else(eutil:getPreference('image_prefix', $edition));
 

@@ -89,21 +89,20 @@ declare function annotation:toJSON($anno as element()) as xs:string {
 : @return The HTML representation
 :)
 declare function annotation:getContent($anno as element(), $idPrefix as xs:string) {
+
     let $p := $anno/mei:p
     
     (:let $xsltBase := concat('file:', system:get-module-load-path(), '/../xslt/'):)
     let $xsltBase := concat(replace(system:get-module-load-path(), 'embedded-eXist-server', ''), '/../xslt/') (: TODO: Prüfen, wie wir an dem replace vorbei kommen:)
     
-    let $html := transform:transform($p,concat($xsltBase,'meiP2html.xsl'),
-    let $edition := request:get-parameter('edition', '');
-	let $imageserver :=  eutil:getPreference('image_server', $edition);
-	let $imageBasePath := if($server = 'leaflet')
+    let $edition := request:get-parameter('edition', '')
+	let $imageserver :=  eutil:getPreference('image_server', $edition)
+	let $imageBasePath := if($imageserver = 'leaflet')
 		then(eutil:getPreference('leaflet_prefix', $edition))
-		else(eutil:getPreference('image_prefix', $edition));
+		else(eutil:getPreference('image_prefix', $edition))
     
-    <parameters><param name="idPrefix" value="{$idPrefix}"/><param name="imagePrefix" value="{$imageBasePath}"/></parameters>)
-    return
-    
+    let $html := transform:transform($p,concat($xsltBase,'meiP2html.xsl'),<parameters><param name="idPrefix" value="{$idPrefix}"/><param name="imagePrefix" value="{$imageBasePath}"/></parameters>)
+    return   
         $html
 };
 
