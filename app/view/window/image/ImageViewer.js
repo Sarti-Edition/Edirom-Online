@@ -171,7 +171,7 @@ Ext.define('EdiromOnline.view.window.image.ImageViewer', {
             var categories = annotation.get('categories');
             var priority = annotation.get('priority');
             var fn = annotation.get('fn');
-
+           
             var plist = Ext.Array.toArray(annotation.get('plist'));
             Ext.Array.insert(me.shapes.get('annotations'), 0, plist);
 
@@ -220,7 +220,10 @@ Ext.define('EdiromOnline.view.window.image.ImageViewer', {
                         method: 'GET',
                         params: {
                             uri: uri,
-                            target: 'tip'
+                            target: 'tip',
+                            edition: EdiromOnline.getApplication().activeEdition
+                       
+
                         },
                         success: function(response){
                             this.update(response.responseText);
