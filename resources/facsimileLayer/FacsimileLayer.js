@@ -17,6 +17,8 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 	 */
 	rectangle: null,
 	
+	popup: null,
+	
 	/**
 	 * Global variable to define the rectangle center.
 	 * @type {Circle}
@@ -50,11 +52,37 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 	},
 	
 	enableAnnotationRectangle: function (ulx, uly, lrx, lry) {
+		var me = this;
 		if (typeof this.annotArray === 'undefined' || this.annotArray === null) {
 			this.annotArray =[];
 		}
-		var rect = this.enableRectangle(ulx, uly, lrx, lry);
-		this.annotArray.push(rect);
+		//var rect = this.enableRectangle(ulx, uly, lrx, lry);
+				
+		ulx = parseInt(ulx);
+		uly = parseInt(uly);
+		lrx = parseInt(lrx);
+		lry = parseInt(lry);
+		
+		var corrd1 = ((lrx - ulx) / 2 + ulx);
+		var corrd2 = ((lry - uly) / 2) + uly;
+		var centerPoint = L.point(corrd1, corrd2);
+		
+		// convert coordinates in degrees
+		var latLngCenterPoint = this._map.unproject(centerPoint, this._map.getMaxZoom());
+		// create circle in center
+		 var rectangleCenter = L.circle([latLngCenterPoint.lat, latLngCenterPoint.lng], 500, {
+		color: 'red',
+		fillColor: '#f03',
+		fillOpacity: 0.5
+		}).addTo(this._map);
+		this.annotArray.push(rectangleCenter);
+		return rectangleCenter;
+	},
+	
+	getInnerAnnot: function(){
+	if (typeof this.annotArray === 'undefined' || this.annotArray === null) {
+			this.annotArray;
+		}		
 	},
 	
 	removeAnnotations: function () {
@@ -64,6 +92,9 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 			}
 			this.annotArray = null;
 		}
+		if (typeof this.rectangle !== 'undefined' && this.rectangle !== null) {
+					this.disableRectangle();
+				}
 	},
 	
 	/**
@@ -73,7 +104,7 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 	 * @param {number} lrx - right x coordinate.
 	 * @param {number} lry - right y coordinste.
 	 */
-	enableRectangle: function (ulx, uly, lrx, lry) {
+	enableRectangle: function (ulx, uly, lrx, lry, isPopupCreate) {
 		// if(typeof this.rectangle === 'undefined' || this.rectangle === null){
 		// define points in coordinates system
 		var pointLeft = L.point(ulx, uly);
@@ -94,11 +125,21 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 		this.rectangle = L.rectangle(bounds, {
 			color: 'black', weight: 1, opacity: 0.8
 		}).addTo(this._map);
+		
+		if(isPopupCreate){
+			this.popup = L.popup({maxHeight : 200}).setLatLng(latLngRight).openOn(this._map);                           
+        	this.rectangle.bindPopup(this.popup);
+		}
+	
 		return this.rectangle;
 		// zoom rectangle in windows center
 		//this._map.fitBounds(bounds);
 		
 		//   }
+	},
+	
+	setPopupContent: function(content){
+		this.popup.setContent(content);
 	},
 	
 	/**

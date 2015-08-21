@@ -6,6 +6,10 @@
 Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 	extend: 'Ext.Component',
 	
+	/* requires: [
+        'Ext.tip.*'
+    ],*/
+	
 	alias: 'widget.leafletmapview',
 	
 	config: {
@@ -32,7 +36,8 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 		var leafletRef = window.L;
 		if (leafletRef == null) {
 			this.update('No leaflet library loaded');
-		} 
+		}
+		
 	},
 	
 	/**
@@ -46,6 +51,7 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 		if (map) {
 			console.log('onResize');
 			map.invalidateSize();
+			//Ext.QuickTips.init();
 		}
 	},
 	
@@ -209,19 +215,60 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 		console.log('Add Annotations Leaflet');
 		console.log(annotations);
 		var me = this;
-		me.shapes.add('annotations',[]);
 		
 		for (i = 0; i < annotations.data.items.length; i++) {
 			var plist = annotations.data.items[i].data.plist;
-			Ext.Array.insert(me.shapes.get('annotations'), 0, plist);
+			var annotURI = annotations.data.items[i].data.uri;
+			var idInner = annotations.data.items[i].data.id;
+			var name = annotations.data.items[i].data.title;
+			//Ext.Array.insert(me.shapes.get('annotations'), 0, plist);
 			for (j = 0; j < plist.length; j++) {
 				var lrx = plist[j].lrx;
 				var lry = plist[j].lry;
 				var ulx = plist[j].ulx;
 				var uly = plist[j].uly;
-				this.facsimileTile.enableAnnotationRectangle(ulx, uly, lrx, lry);
+				
+				var rectangleCenter = me.facsimileTile.enableAnnotationRectangle(ulx, uly, lrx, lry);
+				console.log('rectangleCenter_0');
+				console.log(rectangleCenter);
+				me.addAnnotationsListener(rectangleCenter, ulx, uly, lrx, lry, annotURI, idInner, name);
 			}
 		}
+	
+	},
+	
+	  addAnnotationsListener: function(rectangleCenter, ulx, uly, lrx, lry, annotURI, idInner, name){
+		var me = this;
+		console.log('rectangleCenter');
+		console.log(rectangleCenter);
+		rectangleCenter.on('mouseover', function (e) {
+					me.facsimileTile.disableRectangle();
+					var rect = me.facsimileTile.enableRectangle(ulx, uly, lrx, lry, true);
+					
+					
+              
+               Ext.Ajax.request({
+                        url: 'data/xql/getAnnotation.xql',
+                        method: 'GET',
+                        params: {
+                            uri: annotURI,
+                            target: 'tip',
+                            edition: EdiromOnline.getApplication().activeEdition
+                       
+
+                        },
+                        success: function(response){
+                            //this.update(response.responseText);
+                            console.log('getAnnotation');
+                            console.log(response.responseText);
+                            
+                            me.facsimileTile.setPopupContent(response.responseText);
+                           
+                        }
+                       // scope: this
+                    });
+        
+                });
 	},
 	
 	getShapeElem: function (shapeId) {
@@ -264,7 +311,7 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 		console.log(height);
 		console.log(highlight);
 		this.facsimileTile.disableRectangle();
-		this.facsimileTile.enableRectangle(ulx, uly, ulx + width, uly + height);
+		this.facsimileTile.enableRectangle(ulx, uly, ulx + width, uly + height, false);
 	},
 	
 	showMeasure: function (selectedObject) {
