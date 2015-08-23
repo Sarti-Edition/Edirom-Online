@@ -221,6 +221,7 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 			var annotURI = annotations.data.items[i].data.uri;
 			var idInner = annotations.data.items[i].data.id;
 			var name = annotations.data.items[i].data.title;
+			var args_fn = annotations.data.items[i].data.fn;
 			//Ext.Array.insert(me.shapes.get('annotations'), 0, plist);
 			for (j = 0; j < plist.length; j++) {
 				var lrx = plist[j].lrx;
@@ -229,24 +230,27 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 				var uly = plist[j].uly;
 				
 				var rectangleCenter = me.facsimileTile.enableAnnotationRectangle(ulx, uly, lrx, lry);
-				console.log('rectangleCenter_0');
-				console.log(rectangleCenter);
-				me.addAnnotationsListener(rectangleCenter, ulx, uly, lrx, lry, annotURI, idInner, name);
+				//console.log('rectangleCenter_0');
+				//console.log(rectangleCenter);
+				me.addAnnotationsListener(rectangleCenter, ulx, uly, lrx, lry, annotURI, idInner, name, args_fn);
 			}
 		}
 	
 	},
 	
-	  addAnnotationsListener: function(rectangleCenter, ulx, uly, lrx, lry, annotURI, idInner, name){
+	  addAnnotationsListener: function(rectangleCenter, ulx, uly, lrx, lry, annotURI, idInner, name, args_fn){
 		var me = this;
 		console.log('rectangleCenter');
 		console.log(rectangleCenter);
-		rectangleCenter.on('mouseover', function (e) {
+		 rectangleCenter.on('dblclick', function (e) { 
+         	console.log("click Leaflet");
+         	console.log(args_fn);
+         	eval(args_fn);
+      });
+		rectangleCenter.on('click', function (e) {
 					me.facsimileTile.disableRectangle();
 					var rect = me.facsimileTile.enableRectangle(ulx, uly, lrx, lry, true);
-					
-					
-              
+			
                Ext.Ajax.request({
                         url: 'data/xql/getAnnotation.xql',
                         method: 'GET',
@@ -254,13 +258,11 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
                             uri: annotURI,
                             target: 'tip',
                             edition: EdiromOnline.getApplication().activeEdition
-                       
-
                         },
                         success: function(response){
                             //this.update(response.responseText);
                             console.log('getAnnotation');
-                            console.log(response.responseText);
+                            //console.log(response.responseText);
                             
                             me.facsimileTile.setPopupContent(response.responseText);
                            
@@ -269,6 +271,7 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
                     });
         
                 });
+        
 	},
 	
 	getShapeElem: function (shapeId) {
