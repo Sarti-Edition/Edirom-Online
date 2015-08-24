@@ -242,15 +242,11 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 		var me = this;
 		console.log('rectangleCenter');
 		console.log(rectangleCenter);
-		 rectangleCenter.on('dblclick', function (e) { 
-         	console.log("click Leaflet");
-         	console.log(args_fn);
-         	eval(args_fn);
-      });
-		rectangleCenter.on('click', function (e) {
-					me.facsimileTile.disableRectangle();
-					var rect = me.facsimileTile.enableRectangle(ulx, uly, lrx, lry, true);
-			
+		
+		rectangleCenter.on('mouseover', function (e) {
+					console.log("mouseover Leaflet");
+					
+					
                Ext.Ajax.request({
                         url: 'data/xql/getAnnotation.xql',
                         method: 'GET',
@@ -264,13 +260,26 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
                             console.log('getAnnotation');
                             //console.log(response.responseText);
                             
+                            
+                            me.facsimileTile.disableRectangle();
+							var rect_tmp = me.facsimileTile.enableRectangle(ulx, uly, lrx, lry, true);
+                          	me.facsimileTile.createPupup(lrx, lry);
                             me.facsimileTile.setPopupContent(response.responseText);
+                            
+                            rect_tmp.on('click', function (e) { 
+         						console.log("click Leaflet");
+         						console.log(args_fn);
+         						eval(args_fn);
+      						});
                            
                         }
                        // scope: this
                     });
         
                 });
+                
+                 
+            
         
 	},
 	

@@ -16,7 +16,7 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 	 * @type {Rectangle}
 	 */
 	rectangle: null,
-	
+	rectangleCenter: null,	
 	popup: null,
 	
 	/**
@@ -56,27 +56,51 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 		if (typeof this.annotArray === 'undefined' || this.annotArray === null) {
 			this.annotArray =[];
 		}
-		//var rect = this.enableRectangle(ulx, uly, lrx, lry);
 				
 		ulx = parseInt(ulx);
 		uly = parseInt(uly);
 		lrx = parseInt(lrx);
 		lry = parseInt(lry);
 		
-		var corrd1 = ((lrx - ulx) / 2 + ulx);
-		var corrd2 = ((lry - uly) / 2) + uly;
-		var centerPoint = L.point(corrd1, corrd2);
+		var pointLeft = L.point(((lrx - ulx) / 2 + ulx)-50, ((lry - uly) / 2 + uly)-50);
+		var pointRight = L.point(((lrx - ulx) / 2 + ulx)+50, ((lry - uly) / 2 + uly)+50);
+		
+		// convert coordinates in degrees
+		var latLngLeft = this._map.unproject(pointLeft, this._map.getMaxZoom());
+		var latLngRight = this._map.unproject(pointRight, this._map.getMaxZoom());
+		
+		// create bounds for a rectangle
+		bounds = L.latLngBounds(latLngLeft, latLngRight);
+		
+		// create rectangle
+		this.rectangleCenter = L.rectangle(bounds, {
+			color: 'red', weight: 1, opacity: 0.8
+		}).addTo(this._map);
+		
+		this.annotArray.push(this.rectangleCenter);
+		
+		/*var centerPoint = L.point(corrd1, corrd2);
 		
 		// convert coordinates in degrees
 		var latLngCenterPoint = this._map.unproject(centerPoint, this._map.getMaxZoom());
 		// create circle in center
-		 var rectangleCenter = L.circle([latLngCenterPoint.lat, latLngCenterPoint.lng], 500, {
+		 var rectangleCenter = L.circle([latLngCenterPoint.lat, latLngCenterPoint.lng], 800, {
 		color: 'red',
 		fillColor: '#f03',
 		fillOpacity: 0.5
 		}).addTo(this._map);
-		this.annotArray.push(rectangleCenter);
-		return rectangleCenter;
+		this.annotArray.push(rectangleCenter);*/
+		return this.rectangleCenter;
+	},
+	
+	createPupup: function(lrx, lry){
+		var pointRight = L.point(lrx, lry);
+		
+		// convert coordinates in degrees
+		var latLngRight = this._map.unproject(pointRight, this._map.getMaxZoom());
+
+		this.popup = L.popup({maxHeight : 200}).setLatLng(latLngRight).openOn(this._map);                           
+       	this.rectangleCenter.bindPopup(this.popup);
 	},
 	
 	getInnerAnnot: function(){
@@ -126,11 +150,6 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 			color: 'black', weight: 1, opacity: 0.8
 		}).addTo(this._map);
 		
-		if(isPopupCreate){
-			this.popup = L.popup({maxHeight : 200}).setLatLng(latLngRight).openOn(this._map);                           
-        	this.rectangle.bindPopup(this.popup);
-		}
-	
 		return this.rectangle;
 		// zoom rectangle in windows center
 		//this._map.fitBounds(bounds);
