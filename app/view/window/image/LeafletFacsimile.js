@@ -173,11 +173,22 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 		}
 		console.log("maxZoomLevel :" + maxZoomLevel);
 		
-		var map = this.getMap();
+		/*var map = this.getMap();
 		if(typeof map === 'undefined' || map === null){
 			map = L.map(me.getId());
+		}*/
+		
+		var map = null;
+		if(pageId === 'annot'){
+			map = this.getMap();
+			if(typeof map === 'undefined' || map === null){
+				map = L.map(me.getId());
+			}
 		}
-	
+		else{
+			map = L.map(me.getId());
+		}
+			
 		/*var corrd1 = me.imgWidth / 2;
 		var corrd2 = me.imgHeight / 2;
 		var centerPoint = L.point(corrd1, corrd2);
@@ -201,7 +212,7 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 		
 		me.facsimileTile.addTo(map);
 		
-		this.facsimileTile.fitInImage();
+		me.facsimileTile.fitInImage();
 		
 		/*var app = EdiromOnline.getApplication();
 		var tools = app.getController('ToolsController');
