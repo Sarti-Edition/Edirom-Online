@@ -304,21 +304,31 @@ return
                 <h1>{$annot/mei:title/text()}</h1>
                 {annotation:getContent($annot,'')} 
             </div>
-            <div class="previewArea">
+           
+            	<div class="previewArea">
                 {
+                
+                 if($imageserver = 'digilib') then ( 
                     for $pUri in tokenize($annot/string(@plist), ' ')
                     let $elem := doc(substring-before($pUri, '#'))/id(substring-after($pUri, '#'))
-                    let $zone := local:getZone($elem)
-                    return
+                    let $zone := local:getZone($elem)                              	
+        				return
                         <div class="previewItem">
-                            <div class="imgBox">
+                            <div class="imgBox">                          
                                 <img src="{local:getImageAreaPath($imageBasePath, $zone, $imageWidth)}" class="previewImg" onclick="loadLink('{$pUri}')" />
                                 <input type="hidden" class="previewImgData" value="{concat('{width:', number($zone/@lrx) - number($zone/@ulx), ', height:', number($zone/@lry) - number($zone/@uly), '}')}"/>
                             </div>
                             <div class="label">{concat('Takt ', $elem/@n)}</div>
                         </div>
+            		
+                  )
+            	else(
+                	
+            	)  
+                    
                 }
             </div>
+            
         </div>
     )
     else(

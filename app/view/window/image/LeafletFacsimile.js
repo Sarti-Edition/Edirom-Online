@@ -130,7 +130,6 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 	me.callParent();
 	},*/
 	
-	
 	showImage: function (path, width, height, pageId) {
 		console.log("showImage Leaflet");
 		console.log(path);
@@ -139,13 +138,21 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 		console.log(pageId);
 		var me = this;
 		me.shapes = new Ext.util.MixedCollection();
-		me.imgPath = path;
-		var leaflet_prefix = getPreference('leaflet_prefix');
-		var fields = path.split('.');
-		var name = fields[0];
-		var leaflet_path = leaflet_prefix + name;
-		console.log(leaflet_path);
-		console.log(me.imgPath);
+		
+		var leaflet_path = null;
+		if(pageId === 'annot'){
+			var fields = path.split('.');
+			leaflet_path = fields[0];
+		}
+		else{
+			me.imgPath = path;
+			var leaflet_prefix = getPreference('leaflet_prefix');
+			var fields = path.split('.');
+			var name = fields[0];
+			leaflet_path = leaflet_prefix + name;
+			console.log(leaflet_path);
+			console.log(me.imgPath);
+		}
 		
 		me.imgId = pageId;
 		me.imgHeight = parseInt(height);
@@ -166,8 +173,11 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 		}
 		console.log("maxZoomLevel :" + maxZoomLevel);
 		
-		var map = L.map(me.getId());
-		
+		var map = this.getMap();
+		if(typeof map === 'undefined' || map === null){
+			map = L.map(me.getId());
+		}
+	
 		/*var corrd1 = me.imgWidth / 2;
 		var corrd2 = me.imgHeight / 2;
 		var centerPoint = L.point(corrd1, corrd2);

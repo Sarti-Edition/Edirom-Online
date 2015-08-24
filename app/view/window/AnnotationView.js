@@ -40,11 +40,14 @@ Ext.define('EdiromOnline.view.window.AnnotationView', {
     layout: 'card',
     
     cls: 'annotationView',
-
+    
+    image_server: null,
+	imageViewer: null,
+    
     initComponent: function () {
 
         var me = this;
-
+       
         me.addEvents('showAnnotation');
 
         me.activeSingleAnnotation = "";
@@ -143,6 +146,26 @@ Ext.define('EdiromOnline.view.window.AnnotationView', {
             ],
             border: 0
         });
+        
+          me.image_server = getPreference('image_server');
+        
+        if (me.image_server === 'leaflet') {		
+			me.imageViewer = Ext.create('EdiromOnline.view.window.image.LeafletFacsimile');
+			
+			me.participantsPanel = Ext.create('Ext.panel.Panel', {
+            		layout: 'card',
+            		border: 0,
+            		items: [
+            			me.imageViewer,
+            			me.participantsPanelGrid,
+                me.participantsPanelSingle,
+                me.participantsPanelList
+           			 ]
+        		});
+					
+		} else {
+        
+        
         me.participantsPanel = Ext.create('Ext.panel.Panel', {
             layout: 'card',
             border: 0,
@@ -152,6 +175,7 @@ Ext.define('EdiromOnline.view.window.AnnotationView', {
                 me.participantsPanelList
             ]
         });
+        }
 
         var annotLayoutClass = getPreference('annotation_layout');
 
@@ -389,9 +413,11 @@ Ext.define('EdiromOnline.view.window.AnnotationView', {
     setContent: function(data) {
         var me = this;
         var cont = me.el.getById(me.id + '_annotationCont');
+        
         cont.update(data);
-
+       
         var imgs = cont.query('img');
+        
         Ext.Array.each(imgs, function(img) {
             var elem = new Ext.Element(img);
             elem.on('click', me.imgClicked, me, {image: elem});
@@ -420,13 +446,41 @@ Ext.define('EdiromOnline.view.window.AnnotationView', {
             participant.id = Ext.id();
         });
 
-        me.setPreviewGrid(participants);
+	console.log("setPreview");
+	console.log(participants);
+	
+	if (me.image_server === 'digilib') {
+	 	me.setPreviewGrid(participants);
         me.setPreviewSingle(participants);
         me.setPreviewList(participants);
+	}
+	else{
+		for(i=0; i<participants.length; i++){
+			var participant = participants[i];
+			var hiddenData = participant['hiddenData'];
+			var imgData = Ext.JSON.decode(hiddenData);
+			var imagePath = participant['digilibBaseParams'];
+		//	var imageViewer = Ext.create('EdiromOnline.view.window.image.LeafletFacsimile');
+			me.imageViewer.showImage(imagePath, imgData.width, imgData.height, 'annot');
+			
+			console.log("setPreview leaflet");
+	console.log(participant);
+		
+		}
+		me.setPreviewGrid(participants);
+        me.setPreviewSingle(participants);
+        me.setPreviewList(participants);
+		
+	}
+	
+       
     },
 
     setPreviewGrid: function(participants) {
         var me = this;
+        
+        console.log("setPreviewGrid");
+	console.log(participants);
 
         var el = me.el.getById(me.id + '_annotationParticipants');
         el.update('<div class="annotView"><div class="previewArea"></div></div>');
@@ -519,6 +573,8 @@ Ext.define('EdiromOnline.view.window.AnnotationView', {
 
     setPreviewSingle: function(participants) {
         var me = this;
+        console.log("setPreviewSingle");
+	console.log(participants);
 
         if(participants.length > 0) {
             var participant = participants[0];
@@ -623,6 +679,8 @@ Ext.define('EdiromOnline.view.window.AnnotationView', {
     setPreviewList: function(participants) {
         var me = this;
 
+console.log("setPreviewList");
+	console.log(participants);
         me.participantsList.getStore().loadData(participants, false);
     },
 
