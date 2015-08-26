@@ -106,7 +106,7 @@ Ext.define('EdiromOnline.view.window.source.MeasureBasedView', {
             cls : 'voiceFilter toolButton',
             tooltip: { text: getLangString('view.window.source.SourceView_MeasureBasedView_selectVoices'), align: 'bl-tl' },
             margin: '0 0 0 5',
-            disabled: true,
+           // disabled: false,
             hidden: true
         });
         
@@ -223,9 +223,21 @@ console.log(store);
             
             var voice = m['voice'];
             
+           console.log('setMeasure create HorMV');
+           console.log(m);
+           console.log(voice);
+           
+           console.log(me.parts);
+           console.log(me.parts.getById(voice.substr(1)));
+           console.log(me.parts.getById(voice.substr(1)).get('selected'));
+            
             if(voice == 'score' || me.parts.getById(voice.substr(1)).get('selected')) {
             
                 var viewer = me.viewers.get(voice);
+                
+                console.log('setMeasure create HorMV in IF');
+                console.log(me.viewers);
+                console.log(viewer);
                 
                 if(typeof viewer == 'undefined') {
                     viewer = Ext.create('EdiromOnline.view.window.source.HorizontalMeasureViewer', {
@@ -269,6 +281,8 @@ console.log(store);
     },
     
     showVoiceFilterDialog: function() {
+    
+    console.log('showVoiceFilterDialog');
     
         var me = this;
     
@@ -456,6 +470,13 @@ Ext.define('EdiromOnline.view.window.source.HorizontalMeasureViewer', {
     
     setMeasure: function(measure, measureCount) {
         var me = this;
+        
+        console.log('setMeasure 2 Param');
+        console.log(measure);
+        console.log(me.measure);
+        console.log(measureCount);
+        console.log(me.measure == measure);
+        console.log(me.owner.intervalSpinner.getValue());
         
         if(me.measure == measure && me.owner.intervalSpinner.getValue() == measureCount) return;
         

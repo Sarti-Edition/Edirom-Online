@@ -62,7 +62,14 @@ Ext.define('EdiromOnline.view.window.SummaryView', {
 	
 	setContent: function (data) {
 		var me = this;
-		if (me.image_server === 'leaflet') {
+		
+		var fragment = document.createDocumentFragment('div');
+		var tempDiv = document.createElement('div');
+		fragment.appendChild(tempDiv);
+		tempDiv.innerHTML = data;
+		var name = tempDiv.getElementsByClassName("summaryViewSource");
+		
+		if (me.image_server === 'leaflet' && typeof name !== 'undefined') {
 			var fragment = document.createDocumentFragment('div');
 			var tempDiv = document.createElement('div');
 			fragment.appendChild(tempDiv);
