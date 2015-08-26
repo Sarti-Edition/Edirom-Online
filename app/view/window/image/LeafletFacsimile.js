@@ -396,7 +396,6 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 		var svg_width = parseInt(element.getAttribute('width'));
 		var svg_height = parseInt(element.getAttribute('height'));
 		
-		
 		this.facsimileTile.showOverlay(overlayId, svg_width, svg_height, svgURL);
 	}
 });
