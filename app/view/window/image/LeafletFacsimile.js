@@ -280,8 +280,7 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
                             //this.update(response.responseText);
                             console.log('getAnnotation');
                             //console.log(response.responseText);
-                            
-                            
+                       
                             me.facsimileTile.disableRectangle();
 							var rect_tmp = me.facsimileTile.enableRectangle(ulx, uly, lrx, lry, true);
                           	me.facsimileTile.createPupup(lrx, lry);
@@ -298,10 +297,7 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
                     });
         
                 });
-                
-                 
-            
-        
+ 
 	},
 	
 	getShapeElem: function (shapeId) {
