@@ -78,7 +78,8 @@ Ext.define('EdiromOnline.controller.window.AnnotationView', {
         window.doAJAXRequest('data/xql/getAnnotationPreviews.xql',
             'GET', 
             {
-                uri: uri
+                uri: uri,
+                edition: EdiromOnline.getApplication().activeEdition
             },
             Ext.bind(function(response){
                 var data = Ext.JSON.decode(response.responseText);
