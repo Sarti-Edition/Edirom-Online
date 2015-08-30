@@ -42,6 +42,8 @@ Ext.define('EdiromOnline.view.window.source.MeasureBasedView', {
     
     cls: 'measureBasedView',
     
+    measures: null,
+   
     initComponent: function () {
 
         var me = this;
@@ -185,60 +187,46 @@ Ext.define('EdiromOnline.view.window.source.MeasureBasedView', {
     
     showMeasure: function(movementId, measureId, measureCount) {
         var me = this;
-        
-        if(me.mdivSelector.getValue() != movementId) {
-            me.mdivSelector.setValue(movementId);
-            me.setMdiv(me.mdivSelector);
-        }
-        
-        if(typeof me.measures == 'undefined' || me.measures == null || me.measures.getById(measureId) == null) {
+
+        me.mdivSelector.setValue(movementId);
+        me.setMdiv(me.mdivSelector);
+       
+        if(typeof me.measures === 'undefined' || me.measures === null) {
             Ext.defer(me.showMeasure, 300, me, [movementId, measureId, measureCount], false);
             return;
         }
         
-        me.measureSpinner.setMeasure(me.measures.getById(measureId), measureCount);
+        me.measureSpinner.setMeasure(measureId, measureCount);
     },
     
     setMeasure: function(combo, store, measureCount) {
-console.log('setMeasure');
-console.log(store);
+		
         var me = this;
 
         if(typeof store.getById !== 'function')
             store = combo.store;
 
-console.log(store);
+
         me.viewers.each(function(v) {
             v.hide();
         });
 
         var id = combo.getValue();
-        var measures = store.getById(id);
         
-        if(measures === null){
+        me.measures = store.getById(id);
+        
+        if(me.measures === null){
         	return;
         }
         
-        Ext.Array.each(measures.get('measures'), function(m) {
+        Ext.Array.each(me.measures.get('measures'), function(m) {
             
             var voice = m['voice'];
-            
-           console.log('setMeasure create HorMV');
-           console.log(m);
-           console.log(voice);
-           
-           console.log(me.parts);
-           console.log(me.parts.getById(voice.substr(1)));
-           console.log(me.parts.getById(voice.substr(1)).get('selected'));
             
             if(voice == 'score' || me.parts.getById(voice.substr(1)).get('selected')) {
             
                 var viewer = me.viewers.get(voice);
-                
-                console.log('setMeasure create HorMV in IF');
-                console.log(me.viewers);
-                console.log(viewer);
-                
+               
                 if(typeof viewer == 'undefined') {
                     viewer = Ext.create('EdiromOnline.view.window.source.HorizontalMeasureViewer', {
                         owner: me
@@ -252,7 +240,7 @@ console.log(store);
             }
         });
 
-        Ext.Array.each(measures.get('measures'), function(m) {
+        Ext.Array.each(me.measures.get('measures'), function(m) {
             
             var voice = m['voice'];
             
@@ -653,6 +641,8 @@ Ext.define('EdiromOnline.view.window.source.MeasureSpinner', {
     layout: 'hbox',
     
     mdivSelected: -1,
+    
+    combo: null,
 
     initComponent: function () {
 
@@ -691,8 +681,11 @@ Ext.define('EdiromOnline.view.window.source.MeasureSpinner', {
     },
 
     setMeasure: function(id, measureCount) {
-        this.combo.setValue(id);
-        this.owner.setMeasure(this.combo, this.combo.store, measureCount);
+       if(this.combo !== null){
+       	 this.combo.setValue(id);
+       	 this.owner.setMeasure(this.combo, this.combo.store, measureCount);
+       }      
+        
     },
     
     setStore: function(store) {

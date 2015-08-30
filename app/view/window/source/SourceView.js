@@ -462,21 +462,28 @@ Ext.define('EdiromOnline.view.window.source.SourceView', {
         Ext.create('EdiromOnline.view.window.source.GotoMsg', {
             movements: me.movements,
             callback: Ext.bind(function(measure, movementId) {
+             console.log('gotoMeasureByName**********************************');
+             
                 this.fireEvent('gotoMeasureByName', this, measure, movementId);
-            }, me)
+            }, 
+            me)
         }).show();
     },
 
     gotoMeasure: function(measureId) {
+    console.log('gotoMeasure');
         this.fireEvent('gotoMeasure', this, measureId);
     },
 
     showMeasure: function(movementId, measureId, measureCount) {
         var me = this;
+        console.log('showMeasure Source View');
+        console.log(me.activeView);
         if(me.activeView !== 'measureBasedView')
-            me.switchInternalView('measureBasedView');
-            
+        	me.switchInternalView('measureBasedView');
+       
         me.measureBasedView.showMeasure(movementId, measureId, measureCount);
+   
     },
     
     gotoZone: function(zoneId) {
@@ -618,7 +625,10 @@ Ext.define('EdiromOnline.view.window.source.GotoMsg', {
 
     gotoFn: function(button, event) {
         var me = this;
-
+console.log("in gotoFN ++++++++++++++++++");
+console.log(Ext.String.trim(me.field.getValue()));
+console.log(me.combo.getValue());
+console.log(button);
         //TODO: Validierung
         me.callback(Ext.String.trim(me.field.getValue()), me.combo.getValue());
         me.close();

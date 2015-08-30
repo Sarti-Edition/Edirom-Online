@@ -23,6 +23,7 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 	imgId: null,
 	imgPath: null,
 	shapes: null,
+	annotMap: new Map(),
 	
 	/**
 	 * Get data for initialize a map, data for show measures and ftaffs numbers,
@@ -60,7 +61,10 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 		console.log('addMeasures Leaflet');
 		console.log(shapes);
 		var me = this;
-		me.setShapes(shapes);
+		me.shapes.add('measures', shapes);
+		//me.setShapes(shapes);
+		var plist = Ext.Array.toArray(annotation.get('plist'));
+            Ext.Array.insert(me.shapes.get('annotations'), 0, plist);
 		// me.shapes = shapes;
 		for (i = 0; i < this.shapes.data.items.length; i++) {
 			var name = shapes.data.items[i].data.name;
@@ -72,15 +76,16 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 		}
 	},
 	
-	setShapes: function (shapes) {
+	/*setShapes: function (shapes) {
 		this.shapes = shapes;
-	},
+	},*/
 	
 	removeShapes: function (groupName) {
 		console.log('removeShapes Leaflet');
 		console.log(groupName);
 		if (this.facsimileTile !== null) {
 			if (groupName === 'annotations') {
+			
 				this.facsimileTile.removeAnnotations();
 			} else {
 				this.facsimileTile.removeMarkers();
@@ -237,18 +242,49 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 		console.log(annotations);
 		var me = this;
 		
+		me.shapes.add('annotations', []);
+		
+		annotations.each(function(annotation) {
+			var plist_1 = Ext.Array.toArray(annotation.get('plist'));
+        	Ext.Array.insert(me.shapes.get('annotations'), 0, plist_1);
+		});
+		
 		for (i = 0; i < annotations.data.items.length; i++) {
 			var plist = annotations.data.items[i].data.plist;
 			var annotURI = annotations.data.items[i].data.uri;
 			var idInner = annotations.data.items[i].data.id;
 			var name = annotations.data.items[i].data.title;
 			var args_fn = annotations.data.items[i].data.fn;
+			var priority = annotations.data.items[i].data.priority;
+			var category = annotations.data.items[i].data.categories;
 			//Ext.Array.insert(me.shapes.get('annotations'), 0, plist);
 			for (j = 0; j < plist.length; j++) {
 				var lrx = plist[j].lrx;
 				var lry = plist[j].lry;
 				var ulx = plist[j].ulx;
 				var uly = plist[j].uly;
+				
+				var annotKey = null;
+				if(priority.length > 1 && category.length > 1 ){
+					annotKey = priority+category;
+				}
+				else if(priority.length > 1){
+					annotKey = priority;
+				}
+				else if(category.length > 1){
+					annotKey = category;
+				}
+				
+				if(me.annotMap.has(annotKey)){
+					var arrayValue = me.annotMap.get(annotKey)
+					arrayValue.push(plist[j]);					
+				}
+				else{
+					var arrayValue = [];
+					arrayValue.push(plist[j]);
+					me.annotMap.set(annotKey, arrayValue);
+				}
+				
 				
 				var rectangleCenter = me.facsimileTile.enableAnnotationRectangle(ulx, uly, lrx, lry);
 				//console.log('rectangleCenter_0');
@@ -317,8 +353,8 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 			}
 		}
 		console.log(shapes_list);
-		//        var shapeDiv = me.el.getById(me.id + '_facsContEvents');
-		//        return shapeDiv.getById(me.id + '_' + shapeId);
+		console.log(shape);
+		
 		return shape;
 	},
 	
@@ -329,6 +365,7 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 		
 		
 		var me = this;
+		console.log(me.shapes.get(groupName));
 		return me.shapes.get(groupName);
 	},
 	

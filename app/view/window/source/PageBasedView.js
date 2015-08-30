@@ -67,23 +67,38 @@ Ext.define('EdiromOnline.view.window.source.PageBasedView', {
      
      	var image_server = getPreference('image_server');
      
-        if(image_server === 'leaflet'){
-        	//me.imageViewer.removeShapes('annotations');
-        	return;
-        }
+     
+        console.log('annotationFilterChanged Page BasedView');
+        console.log(visibleCategories);
+        console.log(visiblePriorities);
         
          var annotations = me.imageViewer.getShapes('annotations');
+          console.log(annotations);
+          
+            if(image_server === 'leaflet'){
+           
+        	//me.imageViewer.removeShapes('annotations');
+        	//return;
+        }
+        
+          
         var fn = Ext.bind(function(annotation) {
             var annotDiv = this.imageViewer.getShapeElem(annotation.id);
+            console.log('*************************');
+            console.log(annotDiv);
             var className = annotDiv.dom.className.replace('annotation', '').trim();
+            console.log(className);
             var classes = className.split(' ');
+             console.log(classes);
 
             var hasCategory = false;
             var hasPriority = false;
 
             for(var i = 0; i < classes.length; i++) {
                 hasCategory |= Ext.Array.contains(visibleCategories, classes[i]);
+                console.log(hasCategory);
                 hasPriority |= Ext.Array.contains(visiblePriorities, classes[i]);
+                console.log(hasPriority);
             }
 
             annotDiv.setVisible(hasCategory & hasPriority);
