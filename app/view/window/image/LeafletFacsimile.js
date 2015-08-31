@@ -94,6 +94,14 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 		}
 	},
 	
+	removeDeselectedAnnotations: function (visibleCategories, visiblePriorities, annotations) {
+		console.log('removeDeselectedAnnotations Leaflet');
+		//console.log(groupName);
+	
+		this.facsimileTile.removeDeselectedAnnotations(visibleCategories, visiblePriorities);
+		
+	},
+	
 	clear: function () {
 		console.log('Clear Leaflet');
 		//console.log(this.shapes);
@@ -242,12 +250,12 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 		console.log(annotations);
 		var me = this;
 		
-		me.shapes.add('annotations', []);
+		me.shapes.add('annotations', annotations);
 		
-		annotations.each(function(annotation) {
+		/*annotations.each(function(annotation) {
 			var plist_1 = Ext.Array.toArray(annotation.get('plist'));
         	Ext.Array.insert(me.shapes.get('annotations'), 0, plist_1);
-		});
+		});*/
 		
 		for (i = 0; i < annotations.data.items.length; i++) {
 			var plist = annotations.data.items[i].data.plist;
@@ -265,34 +273,40 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 				var uly = plist[j].uly;
 				
 				var annotKey = null;
-				if(priority.length > 1 && category.length > 1 ){
+				/*if(priority.length > 1 && category.length > 1 ){
 					annotKey = priority+category;
-				}
-				else if(priority.length > 1){
+				}*/
+				if(priority.length > 1){
 					annotKey = priority;
+					me.addToMap(me.annotMap, annotKey, plist[j]);
 				}
-				else if(category.length > 1){
+				if(category.length > 1){
 					annotKey = category;
-				}
-				
-				if(me.annotMap.has(annotKey)){
-					var arrayValue = me.annotMap.get(annotKey)
-					arrayValue.push(plist[j]);					
-				}
-				else{
-					var arrayValue = [];
-					arrayValue.push(plist[j]);
-					me.annotMap.set(annotKey, arrayValue);
+					me.addToMap(me.annotMap, annotKey, plist[j]);
 				}
 				
 				
-				var rectangleCenter = me.facsimileTile.enableAnnotationRectangle(ulx, uly, lrx, lry);
+				
+				
+				var rectangleCenter = me.facsimileTile.enableAnnotationRectangle(ulx, uly, lrx, lry, annotKey);
 				//console.log('rectangleCenter_0');
 				//console.log(rectangleCenter);
 				me.addAnnotationsListener(rectangleCenter, ulx, uly, lrx, lry, annotURI, idInner, name, args_fn);
 			}
 		}
 	
+	},
+	
+	addToMap: function(annotMap, annotKey, el){
+		if(annotMap.has(annotKey)){
+					var arrayValue = annotMap.get(annotKey)
+					arrayValue.push(el);					
+				}
+				else{
+					var arrayValue = [];
+					arrayValue.push(el);
+					annotMap.set(annotKey, arrayValue);
+				}
 	},
 	
 	  addAnnotationsListener: function(rectangleCenter, ulx, uly, lrx, lry, annotURI, idInner, name, args_fn){

@@ -75,13 +75,13 @@ Ext.define('EdiromOnline.view.window.source.PageBasedView', {
          var annotations = me.imageViewer.getShapes('annotations');
           console.log(annotations);
           
-            if(image_server === 'leaflet'){
-           
-        	//me.imageViewer.removeShapes('annotations');
-        	//return;
+            if(image_server === 'leaflet'){   
+            	me.imageViewer.removeShapes('annotations');
+            	me.imageViewer.addAnnotations(annotations);
+        		me.imageViewer.removeDeselectedAnnotations(visibleCategories, visiblePriorities);
+        		return;
         }
-        
-          
+                 
         var fn = Ext.bind(function(annotation) {
             var annotDiv = this.imageViewer.getShapeElem(annotation.id);
             console.log('*************************');

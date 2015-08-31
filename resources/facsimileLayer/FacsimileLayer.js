@@ -51,10 +51,10 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 		this.facsimileHeight = facsimileHeight;
 	},
 	
-	enableAnnotationRectangle: function (ulx, uly, lrx, lry) {
+	enableAnnotationRectangle: function (ulx, uly, lrx, lry, annotKey) {
 		var me = this;
 		if (typeof this.annotArray === 'undefined' || this.annotArray === null) {
-			this.annotArray =[];
+			this.annotArray = new Map();
 		}
 				
 		ulx = parseInt(ulx);
@@ -76,20 +76,21 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 		this.rectangleCenter = L.rectangle(bounds, {
 			color: 'red', weight: 1, opacity: 0.8
 		}).addTo(this._map);
+				
+		//this.annotArray.push(this.rectangleCenter);
 		
-		this.annotArray.push(this.rectangleCenter);
-		
-		/*var centerPoint = L.point(corrd1, corrd2);
-		
-		// convert coordinates in degrees
-		var latLngCenterPoint = this._map.unproject(centerPoint, this._map.getMaxZoom());
-		// create circle in center
-		 var rectangleCenter = L.circle([latLngCenterPoint.lat, latLngCenterPoint.lng], 800, {
-		color: 'red',
-		fillColor: '#f03',
-		fillOpacity: 0.5
-		}).addTo(this._map);
-		this.annotArray.push(rectangleCenter);*/
+		if(this.annotArray.has(annotKey)){
+			var arrayValue = this.annotArray.get(annotKey)
+			arrayValue.push(this.rectangleCenter);					
+		}
+		else{
+			var arrayValue = [];
+			arrayValue.push(this.rectangleCenter);
+			this.annotArray.set(annotKey, arrayValue);
+			console.log('set in Map');
+			console.log(this.annotArray.get(annotKey));
+		}
+								
 		return this.rectangleCenter;
 	},
 	
@@ -110,16 +111,58 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 	},
 	
 	removeAnnotations: function () {
+		var me = this;
 		if (typeof this.annotArray !== 'undefined' && this.annotArray !== null) {
-			for (i = 0; i < this.annotArray.length; i++) {
-				this._map.removeLayer(this.annotArray[i]);
-			}
+		this.annotArray.forEach(function (value, key) {
+			for(j = 0; j < value.length; j++){
+		 		layerToDelete = value[j];
+		 		me._map.removeLayer(layerToDelete);
+		 	}
+    		
+		});
+		
 			this.annotArray = null;
 		}
 		if (typeof this.rectangle !== 'undefined' && this.rectangle !== null) {
 					this.disableRectangle();
 				}
 	},
+		
+	removeDeselectedAnnotations: function (visibleCategories, visiblePriorities) {
+	console.log('removeDeselectedAnnotations');
+	console.log(this.annotArray);
+		if (typeof this.annotArray !== 'undefined' && this.annotArray !== null) {
+		var arrayToDelete = [];
+		var keysToDelete = [];
+		this.annotArray.forEach(function (value, key) {
+			console.log(typeof key, key);
+			var idx_1 = visibleCategories.indexOf(key);
+		  	var idx_2 = visiblePriorities.indexOf(key);
+		  	console.log('1_ for');
+		  	console.log(idx_1);
+		    console.log(idx_2);
+		  	if(idx_1 === -1 && idx_2 === -1){
+		  	 	//arrayToDelete.push(value);
+		  		keysToDelete.push(key);
+		  		
+		  }
+    		
+		});
+		for(i = 0; i < keysToDelete.length; i++){
+			var test = keysToDelete[i];
+			var annotToDelete = this.annotArray.get(test);
+			for(j = 0; j < annotToDelete.length; j++){
+				this._map.removeLayer(annotToDelete[j]);
+			}
+			this.annotArray.delete(test);
+		}
+	
+		}
+		if (typeof this.rectangle !== 'undefined' && this.rectangle !== null) {
+			this.disableRectangle();
+		}
+	},
+	
 	
 	/**
 	 * Create and show a rectangle with given coordinates in pixel
