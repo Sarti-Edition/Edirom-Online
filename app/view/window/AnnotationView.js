@@ -460,16 +460,18 @@ Ext.define('EdiromOnline.view.window.AnnotationView', {
 			var hiddenData = participant['hiddenData'];
 			var imgData = Ext.JSON.decode(hiddenData);
 			var imagePath = participant['digilibBaseParams'];
-		//	var imageViewer = Ext.create('EdiromOnline.view.window.image.LeafletFacsimile');
+			var imageViewer = Ext.create('EdiromOnline.view.window.image.LeafletFacsimile');
 			me.imageViewer.showImage(imagePath, imgData.width, imgData.height, 'annot');
 			
 			console.log("setPreview leaflet");
-	console.log(participant);
+			console.log(participant);
+			console.log(imgData.width);
+			console.log(imgData.height);
 		
 		}
-		me.setPreviewGrid(participants);
-        me.setPreviewSingle(participants);
-        me.setPreviewList(participants);
+		//me.setPreviewGrid(participants);
+        //me.setPreviewSingle(participants);
+        //me.setPreviewList(participants);
 		
 	}
 	

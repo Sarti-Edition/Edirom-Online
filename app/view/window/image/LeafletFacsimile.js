@@ -284,9 +284,7 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 					annotKey = category;
 					me.addToMap(me.annotMap, annotKey, plist[j]);
 				}
-				
-				
-				
+		
 				
 				var rectangleCenter = me.facsimileTile.enableAnnotationRectangle(ulx, uly, lrx, lry, annotKey);
 				//console.log('rectangleCenter_0');
