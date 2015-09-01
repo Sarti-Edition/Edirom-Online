@@ -63,10 +63,10 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 		var me = this;
 		me.shapes.add('measures', shapes);
 		//me.setShapes(shapes);
-		var plist = Ext.Array.toArray(annotation.get('plist'));
-            Ext.Array.insert(me.shapes.get('annotations'), 0, plist);
+		//var plist = Ext.Array.toArray(annotation.get('plist'));
+         //   Ext.Array.insert(me.shapes.get('annotations'), 0, plist);
 		// me.shapes = shapes;
-		for (i = 0; i < this.shapes.data.items.length; i++) {
+		for (i = 0; i < shapes.data.items.length; i++) {
 			var name = shapes.data.items[i].data.name;
 			var lrx = shapes.data.items[i].data.lrx;
 			var lry = shapes.data.items[i].data.lry;
