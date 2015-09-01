@@ -70,7 +70,7 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 		var latLngRight = this._map.unproject(pointRight, this._map.getMaxZoom());
 		
 		// create bounds for a rectangle
-		bounds = L.latLngBounds(latLngLeft, latLngRight);
+		var bounds = L.latLngBounds(latLngLeft, latLngRight);
 		
 		// create rectangle
 		this.rectangleCenter = L.rectangle(bounds, {
@@ -185,17 +185,19 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 		// var latLngRight = L.latLng(lrx, lry);
 		
 		// create bounds for a rectangle
-		bounds = L.latLngBounds(latLngLeft, latLngRight);
+		this.bounds = L.latLngBounds(latLngLeft, latLngRight);
 		
 		// create rectangle
 		// console.log(Ext.getCmp('leafletfacsimile').getMap());
-		this.rectangle = L.rectangle(bounds, {
+		this.rectangle = L.rectangle(this.bounds, {
 			color: 'black', weight: 1, opacity: 0.8
 		}).addTo(this._map);
 		
-		return this.rectangle;
 		// zoom rectangle in windows center
-		//this._map.fitBounds(bounds);
+		this._map.fitBounds(this.bounds);
+		
+		return this.rectangle;
+		
 		
 		//   }
 	},
@@ -222,8 +224,8 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 	 * Show and zoom rectangle in windows center.
 	 */
 	zoomRectangle: function () {
-		if (typeof bounds !== 'undefined' && bounds !== null) {
-			this._map.fitBounds(bounds);
+		if (typeof this.bounds !== 'undefined' && this.bounds !== null) {
+			this._map.fitBounds(this.bounds);
 		}
 	},
 	

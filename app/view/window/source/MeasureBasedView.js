@@ -182,20 +182,26 @@ Ext.define('EdiromOnline.view.window.source.MeasureBasedView', {
 
         }else if(me.imageSet.getCount() > 0)
         */
-            me.measureSpinner.setMeasure(me.measures.getAt(0));
+        
+           me.measureSpinner.setMeasure(me.measures.getAt(0));
     },
     
     showMeasure: function(movementId, measureId, measureCount) {
         var me = this;
+        
+       
+      // if(me.mdivSelector.getValue() != movementId) {
 
         me.mdivSelector.setValue(movementId);
         me.setMdiv(me.mdivSelector);
+      //  }
        
         if(typeof me.measures === 'undefined' || me.measures === null) {
+        	
             Ext.defer(me.showMeasure, 300, me, [movementId, measureId, measureCount], false);
             return;
         }
-        
+     
         me.measureSpinner.setMeasure(measureId, measureCount);
     },
     
@@ -214,6 +220,9 @@ Ext.define('EdiromOnline.view.window.source.MeasureBasedView', {
         var id = combo.getValue();
         
         me.measures = store.getById(id);
+        
+        console.log('setMeasures 216');
+        console.log( me.measures);
         
         if(me.measures === null){
         	return;
@@ -413,7 +422,7 @@ Ext.define('EdiromOnline.view.window.source.HorizontalMeasureViewer', {
         var image_server = getPreference('image_server');
         var viewer = null;   	
     	if(image_server === 'leaflet'){
-    		viewer = Ext.create('EdiromOnline.view.window.image.LeafletFacsimile', {flex: 1});
+    		viewer = Ext.create('EdiromOnline.view.window.image.LeafletFacsimile', {flex: 1, width: '100%'});
     	}
     	else{
     		viewer = Ext.create('EdiromOnline.view.window.image.ImageViewer', {flex: 1});
@@ -475,6 +484,7 @@ Ext.define('EdiromOnline.view.window.source.HorizontalMeasureViewer', {
     },
     
     showMeasure: function(data) {
+    
         var me = this;
         
         Ext.Array.each(me.imageViewers, function(viewer) {
@@ -488,6 +498,8 @@ Ext.define('EdiromOnline.view.window.source.HorizontalMeasureViewer', {
         var actPage = '';
         var actSystem = 0;
         var lastULX = 0;
+        
+         var image_server = getPreference('image_server');
         
         Ext.Array.each(data, function(d) {
             
@@ -521,7 +533,7 @@ Ext.define('EdiromOnline.view.window.source.HorizontalMeasureViewer', {
             
             if(typeof me.imageViewers[viewerCount - 1] == 'undefined') {
             
-             var image_server = getPreference('image_server');
+            
         	var viewer = null;   	
     		if(image_server === 'leaflet'){
     			viewer = Ext.create('EdiromOnline.view.window.image.LeafletFacsimile', {flex: 1});
@@ -579,7 +591,7 @@ Ext.define('EdiromOnline.view.window.source.HorizontalMeasureViewer', {
             var viewer = me.imageViewers[i];
             var group = grouped[groupKeys[i]];
             
-            if(group.measures[0]['path'] != viewer.imgPath) {
+            if(group.measures[0]['path'] != viewer.imgPath || image_server === 'leaflet') {
                 viewer.clear();
                 viewer.showImage(group.measures[0]['path'], group.measures[0]['width'], group.measures[0]['height'], group.measures[0]['pageId']);
             }
@@ -598,7 +610,7 @@ Ext.define('EdiromOnline.view.window.source.HorizontalMeasureViewer', {
             
             var width = lrx - ulx;
             var height = lry - uly;
-    
+            
             viewer.showRect(ulx, uly, width, height, true);
         }
     },
