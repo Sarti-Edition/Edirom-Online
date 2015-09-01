@@ -310,19 +310,29 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 	/**
 	 * Remove layer markers from the map.
 	 */
-	removeLayerMarkers: function () {
+	removeLayerMarkers: function (overlayId) {
 		if (typeof this.layerArray !== 'undefined' && this.layerArray !== null) {
-			for (i = 0; i < this.layerArray.length; i++) {
-				this._map.removeLayer(this.layerArray[i]);
+		var keysToDelete = [];
+		this.layerArray.forEach(function (value, key) {
+			if(key === overlayId){
+				keysToDelete.push(key);
 			}
-			this.layerArray = null;
+		});
+		for(i = 0; i < keysToDelete.length; i++){
+			var test = keysToDelete[i];
+			var annotToDelete = this.layerArray.get(test);
+			for(j = 0; j < annotToDelete.length; j++){
+				this._map.removeLayer(annotToDelete[j]);
+			}
+			this.layerArray.delete(test);
+		}
 		}
 	},
 	
 	showOverlay: function (overlayId, svg_width, svg_height, svgURL) {
 		
 		if (typeof this.layerArray === 'undefined' || this.layerArray === null) {
-			this.layerArray =[];
+			this.layerArray = new Map();
 		}
 		
          var southWest = this._map.unproject([0, svg_height], this._map.getMaxZoom());
@@ -334,8 +344,19 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 			var imOv = L.imageOverlay(svgURL, imageBounds).addTo(this._map);
 	
 			imOv.bringToFront();
+			
+			if(this.layerArray.has(overlayId)){
+			var arrayValue = this.layerArray.get(overlayId)
+			arrayValue.push(imOv);					
+		}
+		else{
+			var arrayValue = [];
+			arrayValue.push(imOv);
+			this.layerArray.set(overlayId, arrayValue);
+			
+		}
 	
-		this.layerArray.push(imOv);
+		//this.layerArray.push(imOv);
 	},
 	
 	/**

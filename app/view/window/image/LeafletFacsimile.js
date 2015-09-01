@@ -426,7 +426,8 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 	
 	hideOverlay: function (overlayId) {
 		console.log("hideOverlay Leaflet");
-		this.facsimileTile.removeLayerMarkers();
+		console.log(overlayId);
+		this.facsimileTile.removeLayerMarkers(overlayId);
 	},
 	
 	showOverlay: function (overlayId, overlay) {
