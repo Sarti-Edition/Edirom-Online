@@ -33,6 +33,8 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 	annotArray: null,
 	layerArray: null,
 	
+	colorMap: new Map(),
+	
 	/**
 	 * Initialite a facsimile layer.
 	 * @overrides
@@ -71,10 +73,22 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 		
 		// create bounds for a rectangle
 		var bounds = L.latLngBounds(latLngLeft, latLngRight);
+		var colorNumber = null;
+		if(this.colorMap.has(annotKey)){
+			colorNumber = this.colorMap.get(annotKey);
+		}
+		else{
+			colorNumber =  this.colorMap.size+1;
+			this.colorMap.set(annotKey, colorNumber);
+		}
+		
+		var current_color = this.calculateColor(colorNumber-1, colorNumber);
+		console.log(current_color);
+		console.log(current_color.length);
 		
 		// create rectangle
 		this.rectangleCenter = L.rectangle(bounds, {
-			color: 'red', weight: 1, opacity: 0.8
+			color: current_color[current_color.length-1], weight: 1, opacity: 0.9
 		}).addTo(this._map);
 				
 		//this.annotArray.push(this.rectangleCenter);
@@ -92,6 +106,34 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 		}
 								
 		return this.rectangleCenter;
+	},
+	
+	 calculateColor: function(startIndex, colorCount) {
+  		var newPalette = [];
+  		var hueStep = Math.floor ( 330 / colorCount ) ;
+  		var hue = 0 ;
+  		var saturation = 95 ;
+  		var luminosity =  55 ;
+  		var greenJump  = false ;
+  		var dummyContext = document.createElement('canvas').getContext('2d');
+  		
+  		for ( var colorIndex=0; colorIndex < colorCount; colorIndex++ ) {
+    		saturation = (colorIndex & 1) ? 90 : 65;
+    		luminosity = (colorIndex & 1) ? 80 : 55;
+    		newPalette.push( this.hslToRgbString (hue ,saturation, luminosity, dummyContext));
+    		hue += hueStep ;
+    		if (!greenJump && hue >100) {
+      			hue+=30;
+      		greenJump = true;
+    		}
+  		} 
+  		return newPalette ;   
+	},
+	
+	// dummy context2d used for hsl -> rgb conversion
+ 	hslToRgbString: function(h,s,l, dummyContext) {
+   		dummyContext.fillStyle = 'hsl(' + h +',' + s + '%,' + l +'% )' ; 
+  		return dummyContext.fillStyle ;
 	},
 	
 	createPupup: function(lrx, lry){
