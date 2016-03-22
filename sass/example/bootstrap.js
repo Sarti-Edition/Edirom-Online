@@ -12,9 +12,16 @@ Ext.Loader.addClassPathMappings({
   "EdiromOnline.view.window.source.HorizontalMeasureViewer": "../../app/view/window/source/MeasureBasedView.js",
   "EdiromOnline.view.window.source.IntervalSpinner": "../../app/view/window/source/MeasureBasedView.js",
   "EdiromOnline.view.window.source.MeasureSpinner": "../../app/view/window/source/MeasureBasedView.js",
-  "EdiromOnline.view.window.source.PageSpinner": "../../app/view/window/source/PageBasedView.js",
+  "EdiromOnline.view.window.source.PageSpinner": "../../app/view/window/text/FacsimileView.js",
   "Ext": "../../ext/src",
+  "Ext.DomHelper": "../../ext/src/dom/Helper.js",
+  "Ext.DomQuery": "../../ext/src/dom/Query.js",
+  "Ext.EventObjectImpl": "../../ext/src/EventObject.js",
   "Ext.Msg": "../../ext/src/window/MessageBox.js",
+  "Ext.Supports": "../../ext/src/Support.js",
+  "Ext.cmd": "../../../../../bin/Sencha/Cmd/5.1.2.52/plugins/src",
+  "Ext.core.DomHelper": "../../ext/src/dom/Helper.js",
+  "Ext.core.DomQuery": "../../ext/src/dom/Query.js",
   "Ext.rtl.EventObjectImpl": "../../ext/src/rtl/EventObject.js",
   "Ext.ux.desktop": "../../ext-ux/desktop",
   "Ext.ux.grid": "../../ext-ux/grid",
@@ -75,6 +82,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "EdiromOnline.view.window.concordanceNavigator.ConcordanceNavigator": [],
   "EdiromOnline.view.window.image.ImageLoader": [],
   "EdiromOnline.view.window.image.ImageViewer": [],
+  "EdiromOnline.view.window.image.LeafletFacsimile": [],
   "EdiromOnline.view.window.search.SearchWindow": [],
   "EdiromOnline.view.window.source.GotoMsg": [],
   "EdiromOnline.view.window.source.HorizontalMeasureViewer": [],
@@ -987,6 +995,7 @@ Ext.ClassManager.addNameAliasMappings({
     "widget.renderingView"
   ],
   "EdiromOnline.view.window.SummaryView": [
+    "widget.layout-border",
     "widget.summaryView"
   ],
   "EdiromOnline.view.window.TopBar": [
@@ -1006,6 +1015,9 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "EdiromOnline.view.window.image.ImageLoader": [],
   "EdiromOnline.view.window.image.ImageViewer": [],
+  "EdiromOnline.view.window.image.LeafletFacsimile": [
+    "widget.leafletmapview"
+  ],
   "EdiromOnline.view.window.search.SearchWindow": [
     "widget.searchWindow"
   ],
@@ -2050,9 +2062,9 @@ Ext.setVersion("ext-theme-base", "4.2.1");
 Ext.setVersion("ext-theme-neptune", "4.2.1");
 Ext.setVersion("ext-theme-neutral", "4.2.1");
 Ext.Loader.loadScript("../../ext/packages/ext-theme-neptune/overrides/Component.js");;
-Ext.Loader.loadScript("../../ext/packages/ext-theme-neptune/overrides/panel/Panel.js");;
 Ext.Loader.loadScript("../../ext/packages/ext-theme-neptune/overrides/toolbar/Toolbar.js");;
 Ext.Loader.loadScript("../../ext/packages/ext-theme-neptune/overrides/layout/component/Dock.js");;
+Ext.Loader.loadScript("../../ext/packages/ext-theme-neptune/overrides/panel/Panel.js");;
 Ext.Loader.loadScript("../../ext/packages/ext-theme-neptune/overrides/container/ButtonGroup.js");;
 Ext.Loader.loadScript("../../ext/packages/ext-theme-neptune/overrides/toolbar/Paging.js");;
 Ext.Loader.loadScript("../../ext/packages/ext-theme-neptune/overrides/picker/Month.js");;
@@ -2061,7 +2073,7 @@ Ext.Loader.loadScript("../../ext/packages/ext-theme-neptune/overrides/panel/Tabl
 Ext.Loader.loadScript("../../ext/packages/ext-theme-neptune/overrides/grid/RowEditor.js");;
 Ext.Loader.loadScript("../../ext/packages/ext-theme-neptune/overrides/grid/column/RowNumberer.js");;
 Ext.Loader.loadScript("../../ext/packages/ext-theme-neptune/overrides/resizer/Splitter.js");;
-Ext.Loader.loadScript("../../ext/packages/ext-theme-neptune/overrides/menu/Menu.js");;
 Ext.Loader.loadScript("../../ext/packages/ext-theme-neptune/overrides/menu/Separator.js");;
+Ext.Loader.loadScript("../../ext/packages/ext-theme-neptune/overrides/menu/Menu.js");;
 Ext.Loader.loadScript("../../ext/packages/ext-theme-neptune/overrides/panel/Tool.js");;
 Ext.Loader.loadScript("../../ext/packages/ext-theme-neptune/overrides/tab/Tab.js");;

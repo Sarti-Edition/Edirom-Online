@@ -465,9 +465,12 @@ declare function local:getImagePathLeaflet($doc) {
             else() 
 };
 
-declare function local:getOutput($doc, $imagePrefix, $server, $imagePath){
+declare function local:getOutput($doc, $imagePrefix, $server, $imagePath, $type, $docUri){
 	let $test := <div>
-	<div>{local:getSourceSummary($doc, $imagePrefix, $server)}</div>
+	<div>{
+		if($type = 'work')then(local:getWorkSummary($doc, $docUri))
+		else(local:getSourceSummary($doc, $imagePrefix, $server))
+}</div>
 	<p>{$imagePath}</p></div>
 	return $test
 };
@@ -487,11 +490,16 @@ let $imagePath := local:getImagePathLeaflet($doc)
 
 return
     if($type = 'work')
-    then(local:getWorkSummary($doc, $docUri))
+    then(
+		if($server = 'leaflet')
+    		then(local:getOutput($doc, $imagePrefix, $server, $imagePath, $type, $docUri))
+    		else(local:getWorkSummary($doc, $docUri))
+
+	)
     else if($type = 'source')
     then(
     	if($server = 'leaflet')
-    	then(local:getOutput($doc, $imagePrefix, $server, $imagePath))
+    	then(local:getOutput($doc, $imagePrefix, $server, $imagePath, $type, $docUri))
     	else(local:getSourceSummary($doc, $imagePrefix, $server))
     )
     else if($type = 'text')
