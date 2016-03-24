@@ -325,7 +325,7 @@ return
                 {annotation:getContent($annot,'')} 
             </div>
            
-            	<div class="previewArea">
+            	<!-- <div class="previewArea">
                 {
                 
                  if($imageserver = 'digilib') then ( 
@@ -357,7 +357,7 @@ return
     				)
      
                 }
-            </div>
+            </div>-->
             
         </div>
     )
@@ -385,12 +385,12 @@ return
                 <h1>{$annot/mei:title/text()}</h1>
                 {annotation:getContent($annot,'')}
             </div>
-            <div class="previewArea">
+           <!-- <div class="previewArea">
                 {
                     local:calculatePreviewsForTip(tokenize($annot/string(@plist),' '))
                     
                 }
-            </div>
+            </div>-->
         </div>
         
     )

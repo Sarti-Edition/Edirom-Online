@@ -52,14 +52,110 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 	setHeight: function (facsimileHeight) {
 		this.facsimileHeight = facsimileHeight;
 	},
+
+	createPupup: function(ulx, uly, lrx, lry, rectangleCenter, content){
+		/*var pointRight = L.point(lrx, lry);
+		
+		// convert coordinates in degrees
+		var latLngRight = this._map.unproject(pointRight, this._map.getMaxZoom());
+
+		var marker = L.marker(latLngRight).addTo(this._map);*/
+
+		ulx = parseInt(ulx);
+		uly = parseInt(uly);
+		lrx = parseInt(lrx);
+		lry = parseInt(lry);
+		
+		var corrd1 = ((lrx - ulx) / 2 + ulx);
+		var corrd2 = ((lry - uly) / 2) + uly;
+		var centerPoint = L.point(corrd1, corrd2);
+		
+		// convert coordinates in degrees
+		var latLngCenterPoint = this._map.unproject(centerPoint, this._map.getMaxZoom());
+
+		this.popup = L.popup({maxHeight : 200}).setLatLng(latLngCenterPoint).openOn(this._map);                           
+       	this.rectangleCenter.bindPopup(this.popup);
+		this.popup.setContent(content);
+
+	},
 	
-	enableAnnotationRectangle: function (ulx, uly, lrx, lry, annotKey) {
-		var me = this;
+	
+	enableAnnotationRectangle: function (ulx, uly, lrx, lry, annotKey, iconPath, aktuelrotate) {
+		var me = this;  
 		if (typeof this.annotArray === 'undefined' || this.annotArray === null) {
 			this.annotArray = new Map();
 		}
-				
+
 		ulx = parseInt(ulx);
+		uly = parseInt(uly);
+		lrx = parseInt(lrx);
+		lry = parseInt(lry);
+		
+		var corrd1 = ((lrx - ulx) / 2) + ulx ;
+		var corrd2 = ((lry - uly) / 2) + uly;
+		
+		var centerPoint = null;
+
+		if(aktuelrotate === 1){			
+			centerPoint = L.point(corrd1, corrd2);
+			
+		}
+		else if(aktuelrotate === 2){
+			// y-ach rotate
+			var new_x = corrd1 - 22;
+			centerPoint = L.point(new_x, corrd2);
+						
+		}
+		else if(aktuelrotate === 3){
+			// x-ach rotate
+			var new_y = corrd2 - 18;
+			centerPoint = L.point(corrd1, new_y);
+			
+		}
+		else if(aktuelrotate === 4){
+			// spiegeln
+			var new_x = corrd1 - 22;
+			var new_y = corrd2 - 18;
+			centerPoint = L.point(new_x, new_y);
+		}
+		else{
+			// TODO: 
+			// aktuelrotate/4 ->
+			// vor komma: 1 bis <= 2,0 usw: # drehungen
+ 			// nach komma(rest) 25: vreschieben, 5: um y-achse, 75: um x-achse; ohne rest: spiegeln
+		}
+
+		// convert coordinates in degrees
+		var latLngCenterPoint = this._map.unproject(centerPoint, this._map.getMaxZoom());
+		
+		var myIcon = L.icon({
+			iconUrl: iconPath
+		});
+
+		
+		this.rectangleCenter = L.marker([latLngCenterPoint.lat, latLngCenterPoint.lng], {
+			icon: myIcon
+		});
+		this.rectangleCenter.addTo(this._map);
+
+		if(this.annotArray.has(annotKey)){
+			var arrayValue = this.annotArray.get(annotKey)
+			arrayValue.push(this.rectangleCenter);					
+		}
+		else{
+			var arrayValue = [];
+			arrayValue.push(this.rectangleCenter);
+			this.annotArray.set(annotKey, arrayValue);
+			
+		}
+
+			console.log('enableAnnotationRectangle');
+			console.log(this.annotArray);
+
+		return this.rectangleCenter;
+
+				
+		/*ulx = parseInt(ulx);
 		uly = parseInt(uly);
 		lrx = parseInt(lrx);
 		lry = parseInt(lry);
@@ -73,6 +169,7 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 		
 		// create bounds for a rectangle
 		var bounds = L.latLngBounds(latLngLeft, latLngRight);
+		
 		var colorNumber = null;
 		if(this.colorMap.has(annotKey)){
 			colorNumber = this.colorMap.get(annotKey);
@@ -105,7 +202,7 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 			console.log(this.annotArray.get(annotKey));
 		}
 								
-		return this.rectangleCenter;
+		return this.rectangleCenter;*/
 	},
 	
 	 calculateColor: function(startIndex, colorCount) {
@@ -136,16 +233,7 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
   		return dummyContext.fillStyle ;
 	},
 	
-	createPupup: function(lrx, lry){
-		var pointRight = L.point(lrx, lry);
-		
-		// convert coordinates in degrees
-		var latLngRight = this._map.unproject(pointRight, this._map.getMaxZoom());
 
-		this.popup = L.popup({maxHeight : 200}).setLatLng(latLngRight).openOn(this._map);                           
-       	this.rectangleCenter.bindPopup(this.popup);
-	},
-	
 	getInnerAnnot: function(){
 	if (typeof this.annotArray === 'undefined' || this.annotArray === null) {
 			this.annotArray;
@@ -236,7 +324,10 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 		}).addTo(this._map);
 		
 		// zoom rectangle in windows center
-		this._map.fitBounds(this.bounds);
+		if(!isPopupCreate){
+			this._map.fitBounds(this.bounds);
+		}
+		
 		
 		return this.rectangle;
 		

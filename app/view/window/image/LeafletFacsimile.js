@@ -23,7 +23,7 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 	imgId: null,
 	imgPath: null,
 	shapes: null,
-	annotMap: new Map(),
+	annotMap: null,
 	
 	/**
 	 * Get data for initialize a map, data for show measures and ftaffs numbers,
@@ -251,6 +251,13 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 		var me = this;
 		
 		me.shapes.add('annotations', annotations);
+		if(typeof me.annotMap === 'undefined' || me.annotMap === null){
+			me.annotMap = new Map();
+		}
+
+
+		var mapRotateData = new Map();
+
 		
 		/*annotations.each(function(annotation) {
 			var plist_1 = Ext.Array.toArray(annotation.get('plist'));
@@ -271,40 +278,70 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 				var lry = plist[j].lry;
 				var ulx = plist[j].ulx;
 				var uly = plist[j].uly;
+
+				var mapRotateKey  = lrx+'_'+lry+'_'+ulx+'_'+uly;
+				var aktuelrotate = null;
+
+				if(mapRotateData.has(mapRotateKey)){
+					var arrayValue = mapRotateData.get(mapRotateKey);
+					aktuelrotate = arrayValue+1;
+					mapRotateData.set(mapRotateKey, aktuelrotate);
+					console.log(aktuelrotate);
 				
+				}
+				else{
+					mapRotateData.set(mapRotateKey, 1);
+					aktuelrotate =  1;
+				}
+
 				var annotKey = null;
 				/*if(priority.length > 1 && category.length > 1 ){
 					annotKey = priority+category;
 				}*/
-				if(priority.length > 1){
+				var iconPath = null;
+				if(typeof priority !== 'undefined' || priority !== null){
 					annotKey = priority;
-					me.addToMap(me.annotMap, annotKey, plist[j]);
+					me.addToMap(annotKey, plist[j]);
+					if(priority.match('Prio1')){
+						iconPath = 'resources/images/icon_all_prio1.png';
+					}
+					else if(priority.match('Prio2')){
+						iconPath = 'resources/images/icon_all_prio2.png';
+					}
+					else{
+						iconPath = 'resources/images/icon_all_prio3.png';
+					}
+
 				}
-				if(category.length > 1){
+				if(typeof category !== 'undefined' || category !== null){
 					annotKey = category;
-					me.addToMap(me.annotMap, annotKey, plist[j]);
+					me.addToMap(annotKey, plist[j]);
 				}
 		
-				
-				var rectangleCenter = me.facsimileTile.enableAnnotationRectangle(ulx, uly, lrx, lry, annotKey);
-				//console.log('rectangleCenter_0');
-				//console.log(rectangleCenter);
+				console.log('annotMap');
+				console.log(me.annotMap);
+				var rectangleCenter = me.facsimileTile.enableAnnotationRectangle(ulx, uly, lrx, lry, annotKey, iconPath, aktuelrotate);
+		
 				me.addAnnotationsListener(rectangleCenter, ulx, uly, lrx, lry, annotURI, idInner, name, args_fn);
 			}
 		}
 	
 	},
 	
-	addToMap: function(annotMap, annotKey, el){
-		if(annotMap.has(annotKey)){
-					var arrayValue = annotMap.get(annotKey)
+	addToMap: function(annotKey, el){
+		console.log('addToMap key');
+		console.log(annotKey);
+		
+		if(this.annotMap.has(annotKey)){
+					var arrayValue = this.annotMap.get(annotKey)
 					arrayValue.push(el);					
 				}
 				else{
-					var arrayValue = [];
+					var arrayValue = new Array();
 					arrayValue.push(el);
-					annotMap.set(annotKey, arrayValue);
+					this.annotMap.set(annotKey, arrayValue);
 				}
+console.log(this.annotMap.has(annotKey));
 	},
 	
 	  addAnnotationsListener: function(rectangleCenter, ulx, uly, lrx, lry, annotURI, idInner, name, args_fn){
@@ -330,20 +367,28 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
                             //console.log(response.responseText);
                        
                             me.facsimileTile.disableRectangle();
-							var rect_tmp = me.facsimileTile.enableRectangle(ulx, uly, lrx, lry, true);
-                          	me.facsimileTile.createPupup(lrx, lry);
-                            me.facsimileTile.setPopupContent(response.responseText);
+							me.facsimileTile.enableRectangle(ulx, uly, lrx, lry, true);
+                          	rect_tmp = me.facsimileTile.createPupup(ulx, uly, lrx, lry, rectangleCenter , response.responseText);
+                            //me.facsimileTile.setPopupContent(response.responseText);
                             
-                            rect_tmp.on('click', function (e) { 
-         						console.log("click Leaflet");
-         						console.log(args_fn);
-         						eval(args_fn);
-      						});
+                            
                            
                         }
                        // scope: this
                     });
         
+                });
+
+				rectangleCenter.on('click', function (e) { 
+         						console.log("click Leaflet");
+         						console.log(args_fn);
+         						eval(args_fn);
+      						});
+
+				rectangleCenter.on('mouseout', function (e) {
+					console.log("mouseout Leaflet");
+						me.facsimileTile.disableRectangle();
+						rectangleCenter.closePopup();						
                 });
  
 	},
