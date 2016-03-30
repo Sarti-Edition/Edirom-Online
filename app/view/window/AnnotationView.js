@@ -42,7 +42,8 @@ Ext.define('EdiromOnline.view.window.AnnotationView', {
     cls: 'annotationView',
     
     image_server: null,
-	imageViewer: null,
+	imageLeafletContainer: null,
+
     
     initComponent: function () {
 
@@ -150,13 +151,18 @@ Ext.define('EdiromOnline.view.window.AnnotationView', {
           me.image_server = getPreference('image_server');
         
         if (me.image_server === 'leaflet') {		
-			me.imageViewer = Ext.create('EdiromOnline.view.window.image.LeafletFacsimile');
+			
+			me.imageLeafletContainer = new EdiromOnline.view.window.image.ImageLeafletContainer();
+
+//Ext.create('EdiromOnline.view.window.image.ImageLeafletContainer');
+
+			//me.imageViewer = Ext.create('EdiromOnline.view.window.image.LeafletFacsimile');
 			
 			me.participantsPanel = Ext.create('Ext.panel.Panel', {
             		layout: 'card',
             		border: 0,
             		items: [
-            			me.imageViewer,
+            			me.imageLeafletContainer,
             			me.participantsPanelGrid,
                 me.participantsPanelSingle,
                 me.participantsPanelList
@@ -455,22 +461,34 @@ Ext.define('EdiromOnline.view.window.AnnotationView', {
         me.setPreviewList(participants);
 	}
 	else{
-		for(i=0; i<participants.length; i++){
+		me.imageLeafletContainer.removeAll(true);
+		me.setPreviewGrid(participants);
+
+		/*for(i=0; i<participants.length; i++){
 			var participant = participants[i];
 			var hiddenData = participant['hiddenData'];
+			var source = participant['source'];
 			var imgData = Ext.JSON.decode(hiddenData);
 			var imagePath = participant['digilibBaseParams'];
-			var imageViewer = Ext.create('EdiromOnline.view.window.image.LeafletFacsimile');
-			me.imageViewer.showImage(imagePath, imgData.width, imgData.height, 'annot');
+			var imageViewer = Ext.create('EdiromOnline.view.window.image.LeafletFacsimile', {flex: 1, height: '100%', title:source});
+//new EdiromOnline.view.window.image.LeafletFacsimile({height:imgData.height});
+//Ext.create('EdiromOnline.view.window.image.LeafletFacsimile');
+			me.imageLeafletContainer.add(imageViewer);
+			imageViewer.showImage(imagePath, imgData.width, imgData.height, 'annot');
+imageViewer.showRect(imgData.x, imgData.y, imgData.width, imgData.height, null);
+
+			
 			
 			console.log("setPreview leaflet");
 			console.log(participant);
 			console.log(imgData.width);
 			console.log(imgData.height);
+
+			
 		
-		}
+		}*/
 		//me.setPreviewGrid(participants);
-        //me.setPreviewSingle(participants);
+       // me.setPreviewSingle(participants);
         //me.setPreviewList(participants);
 		
 	}
@@ -531,6 +549,9 @@ Ext.define('EdiromOnline.view.window.AnnotationView', {
                 square |= true;
 
             }else {
+
+				if (me.image_server === 'digilib') {
+
                 var shape = tplImg.append(div, [id, digilibBaseParams + "dw=600&amp;amp;dh=600" + digilibSizeParams, hiddenData, label], true);
                 shape.on('dblclick', me.participantClickedGrid, me, {participant: id});
 
@@ -545,6 +566,23 @@ Ext.define('EdiromOnline.view.window.AnnotationView', {
                 else
                     square |= true;
             }
+			else{
+				//var participant = participants[i];
+			//var hiddenData = participant['hiddenData'];
+			//var source = participant['source'];
+			var imgData = Ext.JSON.decode(hiddenData);
+			var imagePath = participant['digilibBaseParams'];
+			var imageViewer = Ext.create('EdiromOnline.view.window.image.LeafletFacsimile', {flex: 1, height: '100%', title:source});
+//new EdiromOnline.view.window.image.LeafletFacsimile({height:imgData.height});
+//Ext.create('EdiromOnline.view.window.image.LeafletFacsimile');
+			me.imageLeafletContainer.add(imageViewer);
+			imageViewer.showImage(imagePath, imgData.width, imgData.height, 'annot');
+imageViewer.showRect(imgData.x, imgData.y, imgData.width, imgData.height, null);
+imageViewer.on('dblclick', me.participantClickedGrid, me, {participant: id});
+
+			}
+
+		}
         });
 
         var h = 100.00;
@@ -625,15 +663,29 @@ Ext.define('EdiromOnline.view.window.AnnotationView', {
             if(type == 'text')
                 shape = tplText.append(div, [content, hiddenData, label], true);
 
-            else
+            else{
+				if (me.image_server === 'digilib') {
                 shape = tplImg.append(div, [digilibBaseParams + "dw=600&amp;amp;dh=600" + digilibSizeParams, hiddenData, label], true);
 
-            shape.setWidth('100%');
-            shape.setHeight('100%');
+            	shape.setWidth('100%');
+            	shape.setHeight('100%');
 
-            shape.on('dblclick', me.participantClickedSingle, me, {prevView: prevView});
-
-            /*
+            	shape.on('dblclick', me.participantClickedSingle, me, {prevView: prevView});
+				}
+				else{
+					var imgData = Ext.JSON.decode(hiddenData);
+					var imagePath = participant['digilibBaseParams'];
+					
+					var imageViewer = Ext.create('EdiromOnline.view.window.image.LeafletFacsimile', {flex: 1, height: '100%', title:source});
+//new EdiromOnline.view.window.image.LeafletFacsimile({height:imgData.height});
+//Ext.create('EdiromOnline.view.window.image.LeafletFacsimile');
+					me.imageLeafletContainer.add(imageViewer);
+					imageViewer.showImage(imagePath, imgData.width, imgData.height, 'annot');
+					imageViewer.showRect(imgData.x, imgData.y, imgData.width, imgData.height, null);
+					imageViewer.on('dblclick', me.participantClickedSingle, me, {participant: id});
+				}
+			}
+           /*
             var stepLeft = shape.query('div.stepLeft')[0];
             stepLeft.on('click', me.previousParticipantSingle, me);
 
