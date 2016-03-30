@@ -6,13 +6,19 @@ Ext.define('EdiromOnline.view.window.image.ImageLeafletContainer', {
     ],
     xtype: 'layout-horizontal-box',
 
-	layout: {
+ layout: {
         type: 'hbox',
         pack: 'start',
         align: 'stretch'
     },
+    
+    //bodyPadding: 10,
+    
+    defaults: {
+        frame: true
+       // bodyPadding: 10
+    }
 
-border:true
 /*
 	width: 500,
     height: 400,

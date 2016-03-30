@@ -225,7 +225,9 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 		
 		me.facsimileTile.addTo(map);
 		
-		me.facsimileTile.fitInImage();
+		if(pageId !== 'annot'){
+			me.facsimileTile.fitInImage();
+		}
 		
 		/*var app = EdiromOnline.getApplication();
 		var tools = app.getController('ToolsController');
@@ -436,7 +438,8 @@ console.log(this.annotMap.has(annotKey));
 		this.facsimileTile.disableRectangle();
 		this.facsimileTile.enableRectangle(ulx, uly, ulx + width, uly + height, false);
 	},
-	
+
+
 	showMeasure: function (selectedObject) {
 		console.log('showMeasure Leaflet');
 		console.log(selectedObject);

@@ -128,7 +128,7 @@ declare function local:getSourceParticipants($participants as xs:string*, $doc a
             let $rect := local:getBoundingZone($zones)
             
             let $digilibSizeParams := local:getImageAreaParams($rect, $imgWidth, $imgHeight)
-            let $hiddenData := concat('{width:', number($rect/@lrx) - number($rect/@ulx), ', height:', number($rect/@lry) - number($rect/@uly), ', x:', number($rect/@ulx), ', y:', number($rect/@uly), '}')
+            let $hiddenData := concat('{width:', number($rect/@lrx) - number($rect/@ulx), ', height:', number($rect/@lry) - number($rect/@uly), ', x:', number($rect/@ulx), ', y:', number($rect/@uly), ', origH:', $imgHeight, ', origW:', $imgWidth,'}')
             let $linkUri := concat('xmldb:exist://', document-uri($graphic/root()), '#', local:getSourceLinkTarget($elems, $zones))
             
             return

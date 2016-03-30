@@ -334,11 +334,8 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 		
 		//   }
 	},
-	
-	setPopupContent: function(content){
-		this.popup.setContent(content);
-	},
-	
+
+
 	/**
 	 * Remove rectanle and center from map.
 	 */
