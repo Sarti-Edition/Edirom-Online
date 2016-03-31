@@ -546,8 +546,17 @@ Ext.define('EdiromOnline.view.window.AnnotationView', {
 			else{
 				var imgData = Ext.JSON.decode(hiddenData);
 				var imagePath = participant['digilibBaseParams'];
-				var imageViewer = Ext.create('EdiromOnline.view.window.image.LeafletFacsimile', {html: source, flex:1, height: '100%', margin: '10 10 10 10'});
-				me.imageLeafletContainer.add(imageViewer);
+	 				
+				var imageViewer = Ext.create('EdiromOnline.view.window.image.LeafletFacsimile', {height: '100%', flex:1, margin: '10 10 10 10'});
+					
+				var imageLeafletDetails = Ext.create('EdiromOnline.view.window.image.ImageLeafletDetails', {height: '100%', flex:1, items:[imageViewer, {
+				xtype: 'label',
+        		html: source,
+        		margin: '0 10 0 10'
+
+			}] });	
+				me.imageLeafletContainer.add(imageLeafletDetails);
+
 				imageViewer.showImage(imagePath, imgData.origW, imgData.origH, 'annot');
 				var rectangle = imageViewer.showRect(imgData.x, imgData.y, imgData.width, imgData.height, null);
 				rectangle.on('dblclick', function (e) { 
@@ -649,9 +658,16 @@ Ext.define('EdiromOnline.view.window.AnnotationView', {
 				else{
 					var imgData = Ext.JSON.decode(hiddenData);
 					var imagePath = participant['digilibBaseParams'];
-					
+ 				
 					var imageViewer = Ext.create('EdiromOnline.view.window.image.LeafletFacsimile', {height: '100%', flex:1, margin: '10 10 10 10'});
-					me.imageLeafletContainer.add(imageViewer);
+					
+					var imageLeafletDetails = Ext.create('EdiromOnline.view.window.image.ImageLeafletDetails', {height: '100%', flex:1, items:[imageViewer, {
+				xtype: 'label',
+        		html: source,
+        		margin: '0 10 0 10'
+
+			}] });	
+					me.imageLeafletContainer.add(imageLeafletDetails);
 					imageViewer.showImage(imagePath, imgData.origW, imgData.origH, 'annot');
 					var rectangle = imageViewer.showRect(imgData.x, imgData.y, imgData.width, imgData.height, null);
 					rectangle.on('dblclick', function (e) { 
