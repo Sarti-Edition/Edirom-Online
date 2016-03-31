@@ -436,9 +436,9 @@ console.log(this.annotMap.has(annotKey));
 		console.log(height);
 		console.log(highlight);
 		this.facsimileTile.disableRectangle();
-		this.facsimileTile.enableRectangle(ulx, uly, ulx + width, uly + height, false);
+		var rectangle = this.facsimileTile.enableRectangle(ulx, uly, ulx + width, uly + height, false);
+		return rectangle;
 	},
-
 
 	showMeasure: function (selectedObject) {
 		console.log('showMeasure Leaflet');
