@@ -560,7 +560,11 @@ Ext.define('EdiromOnline.view.window.AnnotationView', {
 				imageViewer.showImage(imagePath, imgData.origW, imgData.origH, 'annot');
 				var rectangle = imageViewer.showRect(imgData.x, imgData.y, imgData.width, imgData.height, null);
 				rectangle.on('dblclick', function (e) { 
+					console.log('click 563');
+				console.log(e);
+						
          			me.participantClickedGrid(e, me, {participant: id});
+
       			});
 
 			}
@@ -668,10 +672,14 @@ Ext.define('EdiromOnline.view.window.AnnotationView', {
 
 			}] });	
 					me.imageLeafletContainer.add(imageLeafletDetails);
+console.log('click 753 create');
+console.log(imagePath);
 					imageViewer.showImage(imagePath, imgData.origW, imgData.origH, 'annot');
 					var rectangle = imageViewer.showRect(imgData.x, imgData.y, imgData.width, imgData.height, null);
 					rectangle.on('dblclick', function (e) { 
-         				me.participantClickedSingle(e, me, {participant: id});
+						console.log('click 753');
+ 						
+         				me.participantClickedSingle('dblclick', me, {participant: id});
       				});
 				}
 			}
@@ -763,7 +771,8 @@ console.log(layoutName);
 
     participantClickedGrid: function(e, item, args) {
         var me = this;
-
+console.log('participantClickedGrid');
+console.log(args['participant']);
         me.setPreviewSingleById(args['participant'], 'grid');
         me.switchActiveLayout('single');
     },

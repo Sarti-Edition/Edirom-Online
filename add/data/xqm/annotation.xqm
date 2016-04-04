@@ -112,7 +112,7 @@ declare function annotation:getContent($anno as element(), $idPrefix as xs:strin
 : @param $anno The Annotation to process
 : @return The priority
 :)
-declare function annotation:getPriority($anno as element()) as xs:string {
+declare function annotation:getPriority($anno as element()) as xs:string* {
     
     let $uri := $anno/mei:ptr[@type eq 'priority']/string(@target)
     

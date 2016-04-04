@@ -323,8 +323,12 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 				console.log('annotMap');
 				console.log(me.annotMap);
 				var rectangleCenter = me.facsimileTile.enableAnnotationRectangle(ulx, uly, lrx, lry, annotKey, iconPath, aktuelrotate);
-		
-				me.addAnnotationsListener(rectangleCenter, ulx, uly, lrx, lry, annotURI, idInner, name, args_fn);
+				var tooltip = L.tooltip({
+          						target: rectangleCenter,
+	     					 	map: me.getMap()
+	      						//html: response.responseText
+      						});
+				me.addAnnotationsListener(rectangleCenter, ulx, uly, lrx, lry, annotURI, idInner, name, args_fn, tooltip);
 			}
 		}
 	
@@ -346,7 +350,7 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 console.log(this.annotMap.has(annotKey));
 	},
 	
-	  addAnnotationsListener: function(rectangleCenter, ulx, uly, lrx, lry, annotURI, idInner, name, args_fn){
+	  addAnnotationsListener: function(rectangleCenter, ulx, uly, lrx, lry, annotURI, idInner, name, args_fn, tooltip){
 		var me = this;
 		console.log('rectangleCenter');
 		console.log(rectangleCenter);
@@ -370,9 +374,13 @@ console.log(this.annotMap.has(annotKey));
                        
                             me.facsimileTile.disableRectangle();
 							me.facsimileTile.enableRectangle(ulx, uly, lrx, lry, true);
-                          	rect_tmp = me.facsimileTile.createPupup(ulx, uly, lrx, lry, rectangleCenter , response.responseText);
-                            //me.facsimileTile.setPopupContent(response.responseText);
-                            
+                          	//rect_tmp = me.facsimileTile.createPupup(ulx, uly, lrx, lry, rectangleCenter , response.responseText);
+                            tooltip.setHtml(response.responseText);
+					/*var tooltip = L.tooltip({
+          						target: rectangleCenter,
+	     					 	map: me.getMap(),
+	      						html: response.responseText
+      						});*/
                             
                            
                         }
@@ -390,7 +398,7 @@ console.log(this.annotMap.has(annotKey));
 				rectangleCenter.on('mouseout', function (e) {
 					console.log("mouseout Leaflet");
 						me.facsimileTile.disableRectangle();
-						rectangleCenter.closePopup();						
+						//me.rectangleCenter.closePopup();						
                 });
  
 	},

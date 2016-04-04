@@ -53,15 +53,18 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 		this.facsimileHeight = facsimileHeight;
 	},
 
-	createPupup: function(ulx, uly, lrx, lry, rectangleCenter, content){
-		/*var pointRight = L.point(lrx, lry);
+	/*createPupup: function(ulx, uly, lrx, lry, rectangleCenter, content){
 		
-		// convert coordinates in degrees
-		var latLngRight = this._map.unproject(pointRight, this._map.getMaxZoom());
 
-		var marker = L.marker(latLngRight).addTo(this._map);*/
+	tooltip = L.tooltip({
+          target: rectangleCenter,
+	      map: this._map,
+	      html: content,
+          padding: '4px 8px'
+      });*/
 
-		ulx = parseInt(ulx);
+
+		/*ulx = parseInt(ulx);
 		uly = parseInt(uly);
 		lrx = parseInt(lrx);
 		lry = parseInt(lry);
@@ -75,9 +78,9 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 
 		this.popup = L.popup({maxHeight : 200}).setLatLng(latLngCenterPoint).openOn(this._map);                           
        	this.rectangleCenter.bindPopup(this.popup);
-		this.popup.setContent(content);
+		this.popup.setContent(content);*/
 
-	},
+	//},
 	
 	
 	enableAnnotationRectangle: function (ulx, uly, lrx, lry, annotKey, iconPath, aktuelrotate) {
