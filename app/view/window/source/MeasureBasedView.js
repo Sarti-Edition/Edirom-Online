@@ -232,9 +232,15 @@ Ext.define('EdiromOnline.view.window.source.MeasureBasedView', {
             
             var voice = m['voice'];
             
+            console.log('voice');
+        console.log( voice);
+            
             if(voice == 'score' || me.parts.getById(voice.substr(1)).get('selected')) {
             
                 var viewer = me.viewers.get(voice);
+                
+                console.log('viewer if voice');
+        		console.log( viewer);
                
                 if(typeof viewer == 'undefined') {
                     viewer = Ext.create('EdiromOnline.view.window.source.HorizontalMeasureViewer', {
@@ -253,8 +259,15 @@ Ext.define('EdiromOnline.view.window.source.MeasureBasedView', {
             
             var voice = m['voice'];
             
+            console.log('voice 2 for');
+        		console.log( voice);
+            
             if(voice == 'score' || me.parts.getById(voice.substr(1)).get('selected')) {
                 var viewer = me.viewers.get(voice);
+                
+                console.log('setMeasure aufruf');
+        		console.log( viewer);
+                
                 viewer.setMeasure(m, measureCount);
             }
         });
@@ -536,7 +549,7 @@ Ext.define('EdiromOnline.view.window.source.HorizontalMeasureViewer', {
             
         	var viewer = null;   	
     		if(image_server === 'leaflet'){
-    			viewer = Ext.create('EdiromOnline.view.window.image.LeafletFacsimile', {flex: 1});
+    			viewer = Ext.create('EdiromOnline.view.window.image.LeafletFacsimile', {height: '100%', flex:1});
     		}
     		else{
     			viewer = Ext.create('EdiromOnline.view.window.image.ImageViewer', {flex: 1});
@@ -617,11 +630,36 @@ Ext.define('EdiromOnline.view.window.source.HorizontalMeasureViewer', {
     
     annotationFilterChanged: function(visibleCategories, visiblePriorities) {
         var me = this;
-        
+
+
+		var image_server = getPreference('image_server');
+     
+     
+        console.log('annotationFilterChanged Measure BasedView');
+        console.log(visibleCategories);
+        console.log(visiblePriorities);
+
+
         Ext.Array.each(me.imageViewers, function(viewer) {
             var annotations = viewer.getShapes('annotations');
+
+console.log("Measure BasedView me.imageViewers");
+console.log(me.imageViewers);
+console.log(viewer);
+
+ 			if(image_server === 'leaflet'){   
+            	//viewer.removeShapes('annotations');
+            	viewer.addAnnotations(annotations);
+        		//viewer.removeDeselectedAnnotations(visibleCategories, visiblePriorities);
+        		
+       		}
+else{
+
             var fn = Ext.bind(function(annotation) {
                 var annotDiv = viewer.getShapeElem(annotation.id);
+
+
+
                 var className = annotDiv.dom.className.replace('annotation', '').trim();
                 var classes = className.split(' ');
     
@@ -640,7 +678,9 @@ Ext.define('EdiromOnline.view.window.source.HorizontalMeasureViewer', {
                 annotations.each(fn);
             else
                 Ext.Array.each(annotations, fn);
+}
         });
+
     }
 });
 

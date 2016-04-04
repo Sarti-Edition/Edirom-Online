@@ -128,20 +128,6 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 		}*/
 	},
 	
-	/*   initComponent: function () {
-	
-	var me = this;
-	
-	me.items = [
-	{
-	html: 'test'
-	}
-	
-	// me.imageViewer
-	];
-	
-	me.callParent();
-	},*/
 	
 	showImage: function (path, width, height, pageId) {
 		console.log("showImage Leaflet");
@@ -251,6 +237,11 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 		console.log('Add Annotations Leaflet');
 		console.log(annotations);
 		var me = this;
+
+if(typeof annotations === 'undefined'){
+return;
+	
+}
 		
 		me.shapes.add('annotations', annotations);
 		if(typeof me.annotMap === 'undefined' || me.annotMap === null){
@@ -411,15 +402,15 @@ console.log(this.annotMap.has(annotKey));
 		var me = this;
 		console.log(me.shapes);
 		
-		var shapes_list = me.shapes.items[0];
+		var shapes_Objectlist = me.shapes.items[0].data;
 		var shape = null;
-		for (i = 0; i < shapes_list.length; i++) {
-			if (shapes_list[i].id === shapeId) {
-				shape = shapes_list[i];
+		for (i = 0; i < shapes_Objectlist.items.length; i++) {
+			if (shapes_Objectlist.items[i].id === shapeId) {
+				shape = shapes_Objectlist.items[i];
 				break;
 			}
 		}
-		console.log(shapes_list);
+		//console.log(shapes_list);
 		console.log(shape);
 		
 		return shape;
