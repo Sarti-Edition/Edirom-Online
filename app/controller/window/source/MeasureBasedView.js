@@ -58,9 +58,9 @@ Ext.define('EdiromOnline.controller.window.source.MeasureBasedView', {
                     fields: ['id', 'label', 'selectedByDefault', 'selected'],
                     data: Ext.JSON.decode(data)
                 });
-				console.log('data/xql/getParts.xql');
-				console.log(data);
-				console.log(parts);
+				//console.log('data/xql/getParts.xql');
+				//console.log(data);
+				//console.log(parts);
                 me.partsLoaded(parts, view);
             }, me)
         );

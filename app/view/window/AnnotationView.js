@@ -452,8 +452,8 @@ Ext.define('EdiromOnline.view.window.AnnotationView', {
             participant.id = Ext.id();
         });
 
-	console.log("setPreview");
-	console.log(participants);
+	//console.log("setPreview");
+	//console.log(participants);
 	
 	if (me.image_server === 'digilib') {
 	 	me.setPreviewGrid(participants);
@@ -476,8 +476,8 @@ Ext.define('EdiromOnline.view.window.AnnotationView', {
     setPreviewGrid: function(participants) {
         var me = this;
         
-        console.log("setPreviewGrid");
-	console.log(participants);
+        //console.log("setPreviewGrid");
+	//console.log(participants);
 
         var el = me.el.getById(me.id + '_annotationParticipants');
         el.update('<div class="annotView"><div class="previewArea"></div></div>');
@@ -559,9 +559,9 @@ Ext.define('EdiromOnline.view.window.AnnotationView', {
 
 				imageViewer.showImage(imagePath, imgData.origW, imgData.origH, 'annot');
 				var rectangle = imageViewer.showRect(imgData.x, imgData.y, imgData.width, imgData.height, null);
-				rectangle.on('dblclick', function (e) { 
-					console.log('click 563');
-				console.log(e);
+				rectangle.on(e, function (e) { 
+					//console.log('click 563');
+				//console.log(e);
 						
          			me.participantClickedGrid(e, me, {participant: id});
 
@@ -600,8 +600,8 @@ Ext.define('EdiromOnline.view.window.AnnotationView', {
 
     setPreviewSingle: function(participants) {
         var me = this;
-        console.log("setPreviewSingle");
-	console.log(participants);
+        //console.log("setPreviewSingle");
+	//console.log(participants);
 
         if(participants.length > 0) {
             var participant = participants[0];
@@ -672,12 +672,12 @@ Ext.define('EdiromOnline.view.window.AnnotationView', {
 
 			}] });	
 					me.imageLeafletContainer.add(imageLeafletDetails);
-console.log('click 753 create');
-console.log(imagePath);
+					//console.log('click 753 create');
+					//console.log(imagePath);
 					imageViewer.showImage(imagePath, imgData.origW, imgData.origH, 'annot');
 					var rectangle = imageViewer.showRect(imgData.x, imgData.y, imgData.width, imgData.height, null);
 					rectangle.on('dblclick', function (e) { 
-						console.log('click 753');
+						//console.log('click 753');
  						
          				me.participantClickedSingle('dblclick', me, {participant: id});
       				});
@@ -731,8 +731,8 @@ console.log(imagePath);
     setPreviewList: function(participants) {
         var me = this;
 
-console.log("setPreviewList");
-	console.log(participants);
+		//console.log("setPreviewList");
+		//console.log(participants);
         me.participantsList.getStore().loadData(participants, false);
     },
 
@@ -746,8 +746,8 @@ console.log("setPreviewList");
                 entry.setChecked(true);
         });
 
-		console.log('switchActiveLayout');
-console.log(layoutName);
+		//console.log('switchActiveLayout');
+		//console.log(layoutName);
 
         switch(layoutName) {
             case 'grid': {
@@ -771,8 +771,8 @@ console.log(layoutName);
 
     participantClickedGrid: function(e, item, args) {
         var me = this;
-console.log('participantClickedGrid');
-console.log(args['participant']);
+		//console.log('participantClickedGrid');
+		//console.log(args['participant']);
         me.setPreviewSingleById(args['participant'], 'grid');
         me.switchActiveLayout('single');
     },

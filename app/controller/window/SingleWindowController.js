@@ -107,7 +107,7 @@ Ext.define('EdiromOnline.controller.window.SingleWindowController', {
             case 'xmlView': return getLangString('controller.window.Window_xmlView');
             case 'sourceView': return getLangString('controller.window.Window_sourceView');
             case 'headerView': return getLangString('controller.window.Window_headerView');
-            case 'facsimileView': return 'Faksimile';
+            case 'facsimileView': return 'Facsimile';
             case 'textView': return getLangString('controller.window.Window_textView');
             case 'annotationView': return getLangString('controller.window.Window_annotationView');
             case 'renderingView': return getLangString('controller.window.Window_renderingView');
