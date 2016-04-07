@@ -36,6 +36,8 @@ Ext.define('EdiromOnline.view.window.text.TextFacsimileSplitView', {
     annotationsLoaded: false,
     annotationsVisibilitySetLocaly: false,
 
+	image_server: null,
+
     initComponent: function () {
 
         var me = this;
@@ -43,9 +45,9 @@ Ext.define('EdiromOnline.view.window.text.TextFacsimileSplitView', {
         me.addEvents('annotationsVisibilityChange', 'afterImagesLoaded', 'afterImageChanged',
             'documentLoaded');
             
-        var image_server = getPreference('image_server');
+        me.image_server = getPreference('image_server');
     	
-    	if(image_server === 'leaflet'){
+    	if(me.image_server === 'leaflet'){
     		me.imageViewer = Ext.create('EdiromOnline.view.window.image.LeafletFacsimile');
     	}
     	else{
@@ -89,23 +91,25 @@ Ext.define('EdiromOnline.view.window.text.TextFacsimileSplitView', {
 
         var me = this;
 
-        me.zoomSlider = Ext.create('Ext.slider.Single', {
-            width: 140,
-            value: 100,
-            increment: 5,
-            minValue: 10,
-            maxValue: 400,
-            checkChangeBuffer: 100,
-            useTips: true,
-            cls: 'zoomSlider',
-            tipText: function(thumb){
-                return Ext.String.format('{0}%', thumb.value);
-            },
-            listeners: {
-                change: Ext.bind(me.zoomChanged, me, [], 0)
-            }
-        });
-        me.bottomBar.add(me.zoomSlider);
+		if(me.image_server === 'digilib'){
+        	me.zoomSlider = Ext.create('Ext.slider.Single', {
+            	width: 140,
+            	value: 100,
+            	increment: 5,
+            	minValue: 10,
+            	maxValue: 400,
+            	checkChangeBuffer: 100,
+            	useTips: true,
+            	cls: 'zoomSlider',
+            	tipText: function(thumb){
+                	return Ext.String.format('{0}%', thumb.value);
+            	},
+            	listeners: {
+                	change: Ext.bind(me.zoomChanged, me, [], 0)
+            	}
+        	});
+        	me.bottomBar.add(me.zoomSlider);
+		}
 
         me.pageSpinner = Ext.create('EdiromOnline.view.window.util.PageSpinner', {
             width: 111,

@@ -22,13 +22,15 @@ Ext.define('EdiromOnline.view.window.text.FacsimileView', {
     measuresVisible: false,
     annotationsVisible: false,
 
+	image_server: null,
+
     initComponent: function () {
 
         this.addEvents();
         
-        var image_server = getPreference('image_server');
+        this.image_server = getPreference('image_server');
     	
-    	if(image_server === 'leaflet'){
+    	if(this.image_server === 'leaflet'){
     		this.imageViewer = Ext.create('EdiromOnline.view.window.image.LeafletFacsimile');
     	}
     	else{
@@ -134,23 +136,25 @@ Ext.define('EdiromOnline.view.window.text.FacsimileView', {
 
         var me = this;
 
-        me.zoomSlider = Ext.create('Ext.slider.Single', {
-            width: 140,
-            value: 100,
-            increment: 5,
-            minValue: 10,
-            maxValue: 400,
-            checkChangeBuffer: 100,
-            useTips: true,
-            cls: 'zoomSlider',
-            tipText: function(thumb){
-                return Ext.String.format('{0}%', thumb.value);
-            },
-            listeners: {
-                change: Ext.bind(me.zoomChanged, me, [], 0)
-            }
-        });
-        me.bottomBar.add(me.zoomSlider);
+		if(me.image_server === 'digilib'){
+        	me.zoomSlider = Ext.create('Ext.slider.Single', {
+            	width: 140,
+            	value: 100,
+            	increment: 5,
+            	minValue: 10,
+            	maxValue: 400,
+            	checkChangeBuffer: 100,
+            	useTips: true,
+            	cls: 'zoomSlider',
+            	tipText: function(thumb){
+                	return Ext.String.format('{0}%', thumb.value);
+            	},
+            	listeners: {
+                	change: Ext.bind(me.zoomChanged, me, [], 0)
+            	}
+        	});
+        	me.bottomBar.add(me.zoomSlider);
+		}
 
         me.pageSpinner = Ext.create('EdiromOnline.view.window.source.PageSpinner', {
             width: 111,

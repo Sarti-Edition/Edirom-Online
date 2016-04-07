@@ -392,13 +392,21 @@ Ext.define('EdiromOnline.view.window.source.SourceView', {
         me.bottomBar.add({xtype:'tbseparator'});
 
         var entries = me.pageBasedView.createToolbarEntries();
+
+		var image_server = getPreference('image_server');
+
         Ext.Array.each(entries, function(entry) {
-            me.bottomBar.add(entry);        
+			if(image_server === 'digilib'){
+				me.bottomBar.add(entry);    
+			}
+			else if(entry.initialCls !== 'zoomSlider' && entry.xtype !== 'tbseparator'){
+				me.bottomBar.add(entry);  
+			}      
         });
         
         entries = me.measureBasedView.createToolbarEntries();
-        Ext.Array.each(entries, function(entry) {
-            me.bottomBar.add(entry);        
+        Ext.Array.each(entries, function(entry) {			
+				me.bottomBar.add(entry);     
         });
     },
 
@@ -465,8 +473,6 @@ Ext.define('EdiromOnline.view.window.source.SourceView', {
         Ext.create('EdiromOnline.view.window.source.GotoMsg', {
             movements: me.movements,
             callback: Ext.bind(function(measure, movementId) {
-             //console.log('gotoMeasureByName**********************************');
-             
                 this.fireEvent('gotoMeasureByName', this, measure, movementId);
             }, 
             me)
@@ -474,7 +480,6 @@ Ext.define('EdiromOnline.view.window.source.SourceView', {
     },
 
     gotoMeasure: function(measureId) {
-    //console.log('gotoMeasure');
         this.fireEvent('gotoMeasure', this, measureId);
     },
 
