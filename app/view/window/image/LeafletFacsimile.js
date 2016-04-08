@@ -84,8 +84,7 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 		//console.log('removeShapes Leaflet');
 		//console.log(groupName);
 		if (this.facsimileTile !== null) {
-			if (groupName === 'annotations') {
-			
+			if (groupName === 'annotations') {			
 				this.facsimileTile.removeAnnotations();
 			} else {
 				this.facsimileTile.removeMarkers();
@@ -307,7 +306,7 @@ return;
 
 				}
 				if(typeof category !== 'undefined' || category !== null){
-					annotKey = category;
+					//annotKey = category;
 					me.addToMap(annotKey, plist[j]);
 				}
 		

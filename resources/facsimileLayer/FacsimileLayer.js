@@ -146,14 +146,9 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 			arrayValue.push(this.rectangleCenter);					
 		}
 		else{
-			var arrayValue = [];
-			arrayValue.push(this.rectangleCenter);
+			var arrayValue = new Array(this.rectangleCenter);
 			this.annotArray.set(annotKey, arrayValue);
-			
 		}
-
-			console.log('enableAnnotationRectangle');
-			console.log(this.annotArray);
 
 		return this.rectangleCenter;
 
@@ -262,30 +257,23 @@ L.TileLayer.FacsimileLayer = L.TileLayer.extend({
 	},
 		
 	removeDeselectedAnnotations: function (visibleCategories, visiblePriorities) {
-	console.log('removeDeselectedAnnotations');
-	console.log(this.annotArray);
 		if (typeof this.annotArray !== 'undefined' && this.annotArray !== null) {
-		var arrayToDelete = [];
 		var keysToDelete = [];
-		this.annotArray.forEach(function (value, key) {
-			console.log(typeof key, key);
-			var idx_1 = visibleCategories.indexOf(key);
-		  	var idx_2 = visiblePriorities.indexOf(key);
-		  	console.log('1_ for');
-		  	console.log(idx_1);
-		    console.log(idx_2);
-		  	if(idx_1 === -1 && idx_2 === -1){
-		  	 	//arrayToDelete.push(value);
-		  		keysToDelete.push(key);
-		  		
-		  }
-    		
-		});
+		this.annotArray.forEach(function(value, key) {
+			var idx_2 = visiblePriorities.indexOf(key);
+			console.log(idx_2);
+		  	if(idx_2 === -1){
+		  		keysToDelete.push(key);		  		
+		  }			
+		}, this.annotArray);
+		
 		for(i = 0; i < keysToDelete.length; i++){
 			var test = keysToDelete[i];
 			var annotToDelete = this.annotArray.get(test);
-			for(j = 0; j < annotToDelete.length; j++){
+			if(typeof annotToDelete !== 'undefined'){
+				for(j = 0; j < annotToDelete.length; j++){
 				this._map.removeLayer(annotToDelete[j]);
+			}
 			}
 			this.annotArray.delete(test);
 		}
