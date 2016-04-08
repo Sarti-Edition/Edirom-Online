@@ -559,7 +559,7 @@ Ext.define('EdiromOnline.view.window.AnnotationView', {
 
 				imageViewer.showImage(imagePath, imgData.origW, imgData.origH, 'annot');
 				var rectangle = imageViewer.showRect(imgData.x, imgData.y, imgData.width, imgData.height, null);
-				rectangle.on(e, function (e) { 
+				rectangle.on('dblclick', function (e) { 
 					//console.log('click 563');
 				//console.log(e);
 						
