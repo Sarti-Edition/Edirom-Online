@@ -221,9 +221,6 @@ Ext.define('EdiromOnline.view.window.source.MeasureBasedView', {
         
         me.measures = store.getById(id);
         
-        //console.log('setMeasures 216');
-        //console.log( me.measures);
-        
         if(me.measures === null){
         	return;
         }
@@ -232,16 +229,10 @@ Ext.define('EdiromOnline.view.window.source.MeasureBasedView', {
             
             var voice = m['voice'];
             
-            //console.log('voice');
-        	//console.log( voice);
-            
             if(voice == 'score' || me.parts.getById(voice.substr(1)).get('selected')) {
             
                 var viewer = me.viewers.get(voice);
                 
-                //console.log('viewer if voice');
-        		//console.log( viewer);
-               
                 if(typeof viewer == 'undefined') {
                     viewer = Ext.create('EdiromOnline.view.window.source.HorizontalMeasureViewer', {
                         owner: me
@@ -259,14 +250,8 @@ Ext.define('EdiromOnline.view.window.source.MeasureBasedView', {
             
             var voice = m['voice'];
             
-            //console.log('voice 2 for');
-        	//console.log( voice);
-            
             if(voice == 'score' || me.parts.getById(voice.substr(1)).get('selected')) {
                 var viewer = me.viewers.get(voice);
-                
-                //console.log('setMeasure aufruf');
-        		//console.log( viewer);
                 
                 viewer.setMeasure(m, measureCount);
             }
@@ -291,8 +276,6 @@ Ext.define('EdiromOnline.view.window.source.MeasureBasedView', {
     },
     
     showVoiceFilterDialog: function() {
-    
-    //console.log('showVoiceFilterDialog');
     
         var me = this;
     
@@ -481,13 +464,6 @@ Ext.define('EdiromOnline.view.window.source.HorizontalMeasureViewer', {
     setMeasure: function(measure, measureCount) {
         var me = this;
         
-        /*console.log('setMeasure 2 Param');
-        console.log(measure);
-        console.log(me.measure);
-        console.log(measureCount);
-        console.log(me.measure == measure);
-        console.log(me.owner.intervalSpinner.getValue());*/
-        
         if(me.measure == measure && me.owner.intervalSpinner.getValue() == measureCount) return;
         
         me.measure = measure;
@@ -634,18 +610,8 @@ Ext.define('EdiromOnline.view.window.source.HorizontalMeasureViewer', {
 
 		var image_server = getPreference('image_server');
      
-     
-        /*console.log('annotationFilterChanged Measure BasedView');
-        console.log(visibleCategories);
-        console.log(visiblePriorities);*/
-
-
         Ext.Array.each(me.imageViewers, function(viewer) {
             var annotations = viewer.getShapes('annotations');
-
-			/*console.log("Measure BasedView me.imageViewers");
-			console.log(me.imageViewers);
-			console.log(viewer);*/
 
  			if(image_server === 'leaflet'){   
             	//viewer.removeShapes('annotations');
@@ -653,12 +619,10 @@ Ext.define('EdiromOnline.view.window.source.HorizontalMeasureViewer', {
         		//viewer.removeDeselectedAnnotations(visibleCategories, visiblePriorities);
         		
        		}
-else{
+			else{
 
             var fn = Ext.bind(function(annotation) {
                 var annotDiv = viewer.getShapeElem(annotation.id);
-
-
 
                 var className = annotDiv.dom.className.replace('annotation', '').trim();
                 var classes = className.split(' ');

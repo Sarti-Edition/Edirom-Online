@@ -67,13 +67,7 @@ Ext.define('EdiromOnline.view.window.source.PageBasedView', {
      
      	var image_server = getPreference('image_server');
      
-     
-        /*console.log('annotationFilterChanged Page BasedView');
-        console.log(visibleCategoriesconsole.log);
-        console.log(visiblePriorities);*/
-        
          var annotations = me.imageViewer.getShapes('annotations');
-          //console.log(annotations);
           
             if(image_server === 'leaflet'){   
             	me.imageViewer.removeShapes('annotations');
@@ -84,21 +78,19 @@ Ext.define('EdiromOnline.view.window.source.PageBasedView', {
                  
         var fn = Ext.bind(function(annotation) {
             var annotDiv = this.imageViewer.getShapeElem(annotation.id);
-            //console.log('*************************');
-            //console.log(annotDiv);
+         
             var className = annotDiv.dom.className.replace('annotation', '').trim();
-            //console.log(className);
+            
             var classes = className.split(' ');
-             //console.log(classes);
-
+            
             var hasCategory = false;
             var hasPriority = false;
 
             for(var i = 0; i < classes.length; i++) {
                 hasCategory |= Ext.Array.contains(visibleCategories, classes[i]);
-                //console.log(hasCategory);
+                
                 hasPriority |= Ext.Array.contains(visiblePriorities, classes[i]);
-                //console.log(hasPriority);
+               
             }
 
             annotDiv.setVisible(hasCategory & hasPriority);
@@ -112,15 +104,10 @@ Ext.define('EdiromOnline.view.window.source.PageBasedView', {
 
     setImageSet: function(imageSet) {
     
-    //console.log('setImageSet in view');
-    //console.log(imageSet);
-    
         var me = this;
         me.imageSet = imageSet;
 
         me.pageSpinner.setStore(me.imageSet);
-
-		//console.log(me.imageToShow);
 
         if(me.imageToShow != null) {
             me.pageSpinner.setPage(me.imageSet.getById(me.imageToShow));
@@ -143,18 +130,6 @@ Ext.define('EdiromOnline.view.window.source.PageBasedView', {
         var imgIndex = me.imageSet.findExact('id', id);
         me.activePage = me.imageSet.getAt(imgIndex);
 
-		/*console.log('setPage PageBasedView');
-		console.log(store);
-		console.log(id);
-		console.log(me.imageSet);
-		console.log(imgIndex);
-        
-        console.log('activePage');
-        console.log(me.activePage);
-        
-         console.log('imageSet');
-        console.log(me.imageSet);*/
-
         me.imageViewer.showImage(me.activePage.get('path'),
             me.activePage.get('width'), me.activePage.get('height'));
             
@@ -168,10 +143,6 @@ Ext.define('EdiromOnline.view.window.source.PageBasedView', {
 
     showPage: function(pageId) {
         var me = this;
-
-		/*console.log('showPage Page Based View');
-		console.log(pageId);
-		console.log(imageSet);*/
 
         if(me.imageSet == null) {
             me.imageToShow = pageId;

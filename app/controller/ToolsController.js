@@ -36,9 +36,6 @@ Ext.define('EdiromOnline.controller.ToolsController', {
     },
     
     addMeasureVisibilityListener: function(id, listener) {
-    
-     //('addMeasureVisibilityListener ToolsController');
-     //console.log(id);
         var me = this;
         me.measureVisibilityListeners[id] = listener;
     },

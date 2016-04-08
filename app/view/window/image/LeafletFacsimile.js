@@ -50,16 +50,12 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 		this.callParent(arguments);
 		var map = this.getMap();
 		if (map) {
-			//console.log('onResize');
 			map.invalidateSize();
 			//Ext.QuickTips.init();
 		}
 	},
 	
 	addMeasures: function (shapes) {
-		
-		//console.log('addMeasures Leaflet');
-		//console.log(shapes);
 		var me = this;
 		me.shapes.add('measures', shapes);
 		//me.setShapes(shapes);
@@ -81,8 +77,6 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 	},*/
 	
 	removeShapes: function (groupName) {
-		//console.log('removeShapes Leaflet');
-		//console.log(groupName);
 		if (this.facsimileTile !== null) {
 			if (groupName === 'annotations') {			
 				this.facsimileTile.removeAnnotations();
@@ -94,16 +88,10 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 	},
 	
 	removeDeselectedAnnotations: function (visibleCategories, visiblePriorities, annotations) {
-		//console.log('removeDeselectedAnnotations Leaflet');
-		//console.log(groupName);
-	
-		this.facsimileTile.removeDeselectedAnnotations(visibleCategories, visiblePriorities);
-		
+		this.facsimileTile.removeDeselectedAnnotations(visibleCategories, visiblePriorities);		
 	},
 	
 	clear: function () {
-		//console.log('Clear Leaflet');
-		//console.log(this.shapes);
 		if (this.facsimileTile !== null) {
 			this.facsimileTile.removeMarkers();
 			this.facsimileTile.disableRectangle();
@@ -113,11 +101,8 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 		}
 	},
 	
-	
 	showShapes: function () {
-		//console.log("showShapes Leaflet");
-		/*
-		
+		/*		
 		var me = this;
 		if(me.shapesHidden) {
 		me.shapesHidden = false;
@@ -129,11 +114,6 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 	
 	
 	showImage: function (path, width, height, pageId) {
-		/*console.log("showImage Leaflet");
-		console.log(path);
-		console.log(width);
-		console.log(height);
-		console.log(pageId);*/
 		var me = this;
 		me.shapes = new Ext.util.MixedCollection();
 		
@@ -148,8 +128,6 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 			var fields = path.split('.');
 			var name = fields[0];
 			leaflet_path = leaflet_prefix + name;
-			/*console.log(leaflet_path);
-			console.log(me.imgPath);*/
 		}
 		
 		me.imgId = pageId;
@@ -169,8 +147,7 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 			originalMaxSize = originalMaxSize / 2;
 			maxZoomLevel++;
 		}
-		//console.log("maxZoomLevel :" + maxZoomLevel);
-		
+	
 		/*var map = this.getMap();
 		if(typeof map === 'undefined' || map === null){
 			map = L.map(me.getId());
@@ -217,10 +194,6 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 		/*var app = EdiromOnline.getApplication();
 		var tools = app.getController('ToolsController');
 		var isVisble = tools.areMeasuresVisible();
-		console.log('showImage Leaflet is visible');
-		console.log(isVisble);
-		console.log(me.shapes);
-		console.log(this.shapes);
 		if(isVisble === 'true'){
 		//tools.setGlobalMeasureVisibility(true);
 		//me.addMeasures(me.shapes);
@@ -228,28 +201,23 @@ Ext.define('EdiromOnline.view.window.image.LeafletFacsimile', {
 	},
 	
 	fitInImage: function () {
-		//console.log('fitInImage Leaflet');
 		this.facsimileTile.fitInImage();
 	},
 	
 	addAnnotations: function (annotations) {
-		//console.log('Add Annotations Leaflet');
-		//console.log(annotations);
 		var me = this;
 
-if(typeof annotations === 'undefined'){
-return;
+		if(typeof annotations === 'undefined'){
+			return;
 	
-}
+		}
 		
 		me.shapes.add('annotations', annotations);
 		if(typeof me.annotMap === 'undefined' || me.annotMap === null){
 			me.annotMap = new Map();
 		}
 
-
 		var mapRotateData = new Map();
-
 		
 		/*annotations.each(function(annotation) {
 			var plist_1 = Ext.Array.toArray(annotation.get('plist'));
@@ -278,8 +246,6 @@ return;
 					var arrayValue = mapRotateData.get(mapRotateKey);
 					aktuelrotate = arrayValue+1;
 					mapRotateData.set(mapRotateKey, aktuelrotate);
-					//console.log(aktuelrotate);
-				
 				}
 				else{
 					mapRotateData.set(mapRotateKey, 1);
@@ -309,9 +275,6 @@ return;
 					//annotKey = category;
 					me.addToMap(annotKey, plist[j]);
 				}
-		
-				//console.log('annotMap');
-				//console.log(me.annotMap);
 				var rectangleCenter = me.facsimileTile.enableAnnotationRectangle(ulx, uly, lrx, lry, annotKey, iconPath, aktuelrotate);
 				var tooltip = L.tooltip({
           						target: rectangleCenter,
@@ -325,9 +288,6 @@ return;
 	},
 	
 	addToMap: function(annotKey, el){
-		//console.log('addToMap key');
-		//console.log(annotKey);
-		
 		if(this.annotMap.has(annotKey)){
 					var arrayValue = this.annotMap.get(annotKey)
 					arrayValue.push(el);					
@@ -337,18 +297,12 @@ return;
 					arrayValue.push(el);
 					this.annotMap.set(annotKey, arrayValue);
 				}
-		//console.log(this.annotMap.has(annotKey));
 	},
 	
 	  addAnnotationsListener: function(rectangleCenter, ulx, uly, lrx, lry, annotURI, idInner, name, args_fn, tooltip){
 		var me = this;
-		//console.log('rectangleCenter');
-		//console.log(rectangleCenter);
 		
 		rectangleCenter.on('mouseover', function (e) {
-					//console.log("mouseover Leaflet");
-					
-					
                Ext.Ajax.request({
                         url: 'data/xql/getAnnotation.xql',
                         method: 'GET',
@@ -359,9 +313,6 @@ return;
                         },
                         success: function(response){
                             //this.update(response.responseText);
-                            //console.log('getAnnotation');
-                            //console.log(response.responseText);
-                       
                             me.facsimileTile.disableRectangle();
 							me.facsimileTile.enableRectangle(ulx, uly, lrx, lry, true);
                           	//rect_tmp = me.facsimileTile.createPupup(ulx, uly, lrx, lry, rectangleCenter , response.responseText);
@@ -380,13 +331,10 @@ return;
                 });
 
 				rectangleCenter.on('click', function (e) { 
-         						//console.log("click Leaflet");
-         						//console.log(args_fn);
          						eval(args_fn);
       						});
 
 				rectangleCenter.on('mouseout', function (e) {
-					//console.log("mouseout Leaflet");
 						me.facsimileTile.disableRectangle();
 						//me.rectangleCenter.closePopup();						
                 });
@@ -394,12 +342,7 @@ return;
 	},
 	
 	getShapeElem: function (shapeId) {
-		
-		//console.log("getShapeElem Leaflet");
-		//console.log(shapeId);
-		
 		var me = this;
-		//console.log(me.shapes);
 		
 		var shapes_Objectlist = me.shapes.items[0].data;
 		var shape = null;
@@ -409,38 +352,24 @@ return;
 				break;
 			}
 		}
-		//console.log(shapes_list);
-		//console.log(shape);
 		
 		return shape;
 	},
 	
 	getShapes: function (groupName) {
 		
-		//console.log("getShapes leaflet");
-		//console.log(groupName);
-		
-		
 		var me = this;
-		//console.log(me.shapes.get(groupName));
+
 		return me.shapes.get(groupName);
 	},
 	
 	showRect: function (ulx, uly, width, height, highlight) {
-		/*console.log('showRect Leaflet');
-		console.log(ulx);
-		console.log(uly);
-		console.log(width);
-		console.log(height);
-		console.log(highlight);*/
 		this.facsimileTile.disableRectangle();
 		var rectangle = this.facsimileTile.enableRectangle(ulx, uly, ulx + width, uly + height, false);
 		return rectangle;
 	},
 
 	showMeasure: function (selectedObject) {
-		//console.log('showMeasure Leaflet');
-		//console.log(selectedObject);
 		//this.addMeasures(selectedObject);
 		/*	var measureNr = 'measure'+selectedObject.data.measurenr+'_s'+selectedObject.data.staff;
 		for (i = 0; i < zones.length; i++) {
@@ -457,7 +386,6 @@ return;
 	},
 	
 	getActualRect: function () {		
-		//console.log("getActualRect Leaflet");
 		var me = this;
 		return {
 			x: 0,
@@ -468,15 +396,10 @@ return;
 	},
 	
 	hideOverlay: function (overlayId) {
-		//console.log("hideOverlay Leaflet");
-		//console.log(overlayId);
 		this.facsimileTile.removeLayerMarkers(overlayId);
 	},
 	
 	showOverlay: function (overlayId, overlay) {
-		/*console.log("showOverlay Leaflet");
-		console.log(overlayId);
-		console.log(overlay);*/
 		
 		var svgURL = "data:image/svg+xml;base64," + btoa(overlay);
 		

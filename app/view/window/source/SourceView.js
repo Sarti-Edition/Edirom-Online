@@ -107,8 +107,6 @@ Ext.define('EdiromOnline.view.window.source.SourceView', {
         
         }else if(me.window.internalIdType == 'surface' || me.window.internalIdType == 'graphic' ) {
             me.window.requestForActiveView(me);
- 			//console.log('110');
-			//console.log(me.window.internalId);
             me.showPage(me.window.internalId);
         }
     },
@@ -116,9 +114,6 @@ Ext.define('EdiromOnline.view.window.source.SourceView', {
     checkGlobalMeasureVisibility: function(visible) {
         
         var me = this;
-        
-        //console.log('checkGlobalMeasureVisibility Source View view');
-        //console.log(visible);
         
         if(me.measuresVisibilitySetLocaly) return;
         
@@ -281,11 +276,6 @@ Ext.define('EdiromOnline.view.window.source.SourceView', {
 
         me.pageBasedView.setPage(combo, store);
         
-        /*console.log('setPage SourceView in view');
-        console.log(me.measuresVisible);
-        console.log(combo);
-         console.log(store);*/
-
         if(me.measuresVisible)
             this.fireEvent('measureVisibilityChange', me, true);
 
@@ -295,8 +285,6 @@ Ext.define('EdiromOnline.view.window.source.SourceView', {
 
     showPage: function(pageId) {
         var me = this;
- 		//console.log('298');
-		//console.log(pageId);
         me.pageBasedView.showPage(pageId);
     },
 
@@ -450,10 +438,6 @@ Ext.define('EdiromOnline.view.window.source.SourceView', {
         me.measuresVisible = state;
         me.measuresVisibilitySetLocaly = true;
         
-        /*console.log('toggleMeasures in view');
-        console.log(item);
-         console.log(state);*/
-
         this.fireEvent('measureVisibilityChange', me, state);
     },
 
@@ -485,8 +469,7 @@ Ext.define('EdiromOnline.view.window.source.SourceView', {
 
     showMeasure: function(movementId, measureId, measureCount) {
         var me = this;
-        //console.log('showMeasure Source View');
-        //console.log(me.activeView);
+       
         if(me.activeView !== 'measureBasedView')
         	me.switchInternalView('measureBasedView');
        
@@ -633,10 +616,7 @@ Ext.define('EdiromOnline.view.window.source.GotoMsg', {
 
     gotoFn: function(button, event) {
         var me = this;
-		/*console.log("in gotoFN ++++++++++++++++++");
-		console.log(Ext.String.trim(me.field.getValue()));
-		console.log(me.combo.getValue());
-		console.log(button);*/
+
         //TODO: Validierung
         me.callback(Ext.String.trim(me.field.getValue()), me.combo.getValue());
         me.close();
