@@ -69,6 +69,11 @@ Ext.define('EdiromOnline.Application', {
        
         me.addEvents('workSelected');
         
+        if(window.location.pathname.search(/\/sabino/i) != -1)
+            me.activeWork = 'edirom_work_119c9aa1-4285-4e35-8076-961146bec086';
+        else if(window.location.pathname.search(/\/litiganti/i) != -1)
+            me.activeWork = 'edirom_work_3618ad64-81b1-40f7-965b-8813c8e6ec7d';
+                
         Ext.Ajax.request({
             url: 'data/xql/getEditionURI.xql',
             async: false,
