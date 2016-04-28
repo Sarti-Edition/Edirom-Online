@@ -11,18 +11,36 @@ declare namespace transform="http://exist-db.org/xquery/transform";
 declare option exist:serialize "method=xhtml media-type=text/html omit-xml-declaration=yes indent=yes";
 
 let $uri := request:get-parameter('uri', '')
-let $docUri := if(contains($uri, '///')) then(substring-after($uri, '///')) else($uri)
-(:let $action := if(contains($docUri, '?')) then(substring-after($docUri, '?')) else($docUri)
-let $temp := if(contains($docUri, '?')) then(substring-before($docUri, '?')) else($docUri)
-let $newUri := concat('http://localhost:8080/exist/rest/', $temp):)
-let $newUri := concat('http://localhost:8080/exist/rest/', $docUri)
+let $movId := request:get-parameter('movId', '')
+
+let $source := doc($uri)/mei:mei
+let $sourceId := $source/string(@xml:id)
+let $sourceId := if($sourceId = 'edirom_source_31d11f53-3427-40fc-b7cd-5bc9270d4f70')
+                    then('sabino/DR_Wn') (: sabino :)
+                    else if($sourceId = 'edirom_source_75afe354-9f64-4696-8fda-6b7e3dbecbf4')
+                    then('sabino/DR_Lo') (: sabino :)                    
+                    else if($sourceId = 'edirom_source_7d14fb6f-d015-4e80-b41b-637336f45ac3')
+                    then('sabino/Wn1') (: sabino :)                    
+                    else if($sourceId = 'edirom_source_f75b1ee8-594e-4a40-af26-7bf64bc3a5c3')
+                    then('sabino/Lo') (: sabino :)                    
+                    else if($sourceId = 'edirom_source_029a9945-b95d-439b-8f64-34d5a071ed28')
+                    then('litiganti/DR_Bs') (: litiganti :)                    
+                    else if($sourceId = 'edirom_source_69c9e3b4-9c6f-4d31-86ac-853ccbc61307')
+                    then('litiganti/Bu') (: litiganti :)                    
+                    else if($sourceId = 'edirom_source_e372ebe5-a7d7-4102-b929-392cbe9b281c')
+                    then('litiganti/Sn') (: litiganti :)                    
+                    else if($sourceId = 'edirom_source_93ad5ca3-3ef7-4716-b41a-0f78cf9fb51b')
+                    then('litiganti/Wn1') (: litiganti :)                    
+                    else('')
+let $movLabel := $source/id($movId)/string(@label)
+let $encodingUri := concat('/exist/rest/db/contents/encoding/', $sourceId, '_', $movLabel, '.xml')
 
 return
 <html>	
     <head>   	
         <title></title>
     	<!-- **VEROVIO** -->
-    	<script src="../../resources/verovio/verovio-toolkit-0.9.9.js" type="text/javascript" charset="utf-8"></script>
+    	<script src="../../resources/verovio/verovio-toolkit-0.9.10-dev-215f725-256Mb.js" type="text/javascript" charset="utf-8"></script>
     	
     	<!-- **JQUERY** -->
     	<script type="text/javascript" src="../../resources/jquery/jquery-2.1.3.js"  charset="utf-8"></script> 
@@ -38,7 +56,7 @@ return
 	 	var initWidth = $(document).width()* 100 / 33;
 	 	
                 $.ajax({{
-                    url: '{$newUri}'
+                    url: '{$encodingUri}'
                     ,async: false
                     , dataType: "text"
                     , success: function(data) {{

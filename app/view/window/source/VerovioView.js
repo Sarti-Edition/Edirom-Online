@@ -66,6 +66,7 @@ Ext.define('EdiromOnline.view.window.source.VerovioView', {
 		
 		me.callParent();
 		
+		me.on('afterrender', me.createMenuEntries, me, {single: true});
 		me.on('afterrender', me.createToolbarEntries, me);
 	},
 	
@@ -75,6 +76,33 @@ Ext.define('EdiromOnline.view.window.source.VerovioView', {
 		me.pageBasedView.setImageSet(me.imageSet);
 	},
 	
+	setMovements: function(movements) {
+        var me = this;
+
+        me.movements = movements;
+
+        var movementItems = [];
+        movements.each(function(movement) {
+            movementItems.push({
+                text: movement.get('name'),
+                handler: Ext.bind(me.gotoMovement, me, movement.get('id'), true)
+            });
+        });
+
+        me.gotoMenu.menu.add({
+            id: me.id + '_gotoMovement',
+            text: getLangString('view.window.source.SourceView_gotoMovement'),
+            menu: {
+                items: movementItems
+            }
+        });
+    },
+
+    gotoMovement: function(menuItem, event, movementId) {
+        this.fireEvent('gotoMovement', this, movementId);
+    },
+
+	
 	createToolbarEntries: function () {
 		var me = this;
 		var entries = me.createPageSpinner();
@@ -82,6 +110,28 @@ Ext.define('EdiromOnline.view.window.source.VerovioView', {
 			me.bottomBar.add(entry);
 		});
 	},
+	
+	createMenuEntries: function() {
+
+        var me = this;
+
+        me.gotoMenu =  Ext.create('Ext.button.Button', {
+            text: getLangString('view.window.source.SourceView_gotoMenu'),
+            indent: false,
+            cls: 'menuButton',
+            menu : {
+                items: [
+                    /*{
+                        id: me.id + '_gotoMeasure',
+                        text: getLangString('view.window.source.SourceView_gotoMeasure'),
+                        handler: Ext.bind(me.gotoMeasureDialog, me)
+                    }*/
+                ]
+            }
+        });
+        me.window.getTopbar().addViewSpecificItem(me.gotoMenu, me.id);
+    },
+
 	
 	stretchHightClick: function (me) {
 		me.pageSpinner.setDisabled(true);

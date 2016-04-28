@@ -38,12 +38,36 @@ Ext.define('EdiromOnline.controller.window.source.VerovioView', {
 		if (view.initialized) return;
 		view.initialized = true;
 		
-		var uri = view.uri;
-		
-		view.setIFrameURL('data/xql/getExtendedStaff.xql?uri=' + uri);
+		view.on('gotoMovement', me.onGotoMovement, me);
+
+		Ext.Ajax.request({
+            url: 'data/xql/getMovements.xql',
+            method: 'GET',
+            params: {
+                uri: view.uri
+            },
+            success: function(response){
+                var data = response.responseText;
+
+                var movements = Ext.create('Ext.data.Store', {
+                    fields: ['id', 'name'],
+                    data: Ext.JSON.decode(data)
+                });
+
+                me.movementsLoaded(movements, view);
+            }
+        });
 	},
 	
-	pagesLoaded: function (text, view) {
+    movementsLoaded: function(movements, view) {
+        view.setMovements(movements);
+    },
+    
+    onGotoMovement: function(view, movId) {
+        view.setIFrameURL('data/xql/getExtendedStaff.xql?uri=' + view.uri + "&movId=" + movId);
+    },
+    
+    pagesLoaded: function (text, view) {
 		view.setImageSet(text);
 	}
 });
