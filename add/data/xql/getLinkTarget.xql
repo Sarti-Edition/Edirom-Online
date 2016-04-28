@@ -123,6 +123,10 @@ declare function local:getMdivUri($uri) {
                     then('xmldb:exist:///db/contents/sources/edirom_source_245ab816-6dd3-4d7d-acb7-39c1c131990f.xml')
                     else if($sourceSigle = 'litiganti-Bs')
                     then('xmldb:exist:///db/contents/sources/edirom_source_029a9945-b95d-439b-8f64-34d5a071ed28.xml')
+                    (:
+                        TODO: Kristin: für Sabino erweitern
+                    else if($sourceSigle = 'litiganti-Bs')
+                    then('xmldb:exist:///db/contents/sources/edirom_source_029a9945-b95d-439b-8f64-34d5a071ed28.xml'):)
                     else()
     let $source := doc($sourceUri)
     let $mdiv := $source//mei:mdiv[@label = $mdivLabel]
