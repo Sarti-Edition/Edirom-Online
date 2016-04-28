@@ -35,7 +35,7 @@ declare function local:getViews($type, $docUri, $doc) {
     
     string-join((
         (: SummaryView :)
-        concat("{type:'summaryView',uri:'", $docUri, "'}"),
+        if($type != 'html') then(concat("{type:'summaryView',uri:'", $docUri, "'}")) else(),
         
         (: HeaderView :)
         if($doc//mei:meiHead or $doc//tei:teiHeader) then(concat("{type:'headerView',uri:'", $docUri, "'}")) else(),
